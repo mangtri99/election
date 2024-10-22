@@ -1,12 +1,16 @@
 export default defineNuxtConfig({
-  compatibilityDate: '2024-07-30',
-  future: { compatibilityVersion: 4 },
   modules: [
     '@nuxthub/core',
     '@nuxt/ui',
     'nuxt-auth-utils',
-    '@nuxt/eslint'
+    '@nuxt/eslint',
+    '@pinia/nuxt'
   ],
+  devtools: {
+    enabled: true
+  },
+  future: { compatibilityVersion: 4 },
+  compatibilityDate: '2024-07-30',
   hub: {
     database: true
   },
@@ -18,8 +22,5 @@ export default defineNuxtConfig({
         commaDangle: 'never'
       }
     }
-  },
-  devtools: {
-    enabled: true
   }
 })
