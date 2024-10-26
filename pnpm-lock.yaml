@@ -34,7 +34,7 @@ importers:
         version: 3.13.2(@parcel/watcher@2.4.1)(@types/node@22.1.0)(drizzle-orm@0.35.1(@cloudflare/workers-types@4.20241011.0)(@opentelemetry/api@1.9.0))(encoding@0.1.13)(eslint@9.12.0(jiti@1.21.6))(ioredis@5.4.1)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.20.0)(terser@5.31.4)(typescript@5.6.3)(vite@5.4.8(@types/node@22.1.0)(terser@5.31.4))(webpack-sources@3.2.3)
       nuxt-auth-utils:
         specifier: ^0.4.4
-        version: 0.4.4(magicast@0.3.5)(rollup@4.20.0)(webpack-sources@3.2.3)
+        version: 0.4.4(bcrypt@5.1.1(encoding@0.1.13))(magicast@0.3.5)(rollup@4.20.0)(webpack-sources@3.2.3)
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -2183,6 +2183,10 @@ packages:
   base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
 
+  bcrypt@5.1.1:
+    resolution: {integrity: sha512-AGBHOG5hPYZ5Xl9KXzU5iKq9516yEmvCKDg3ecP5kX2aB6UqTeXZxk2ELnDgDm6BQSMlLt9rDB4LoSMx0rYwww==}
+    engines: {node: '>= 10.0.0'}
+
   binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
     engines: {node: '>=8'}
@@ -3816,6 +3820,9 @@ packages:
       xml2js:
         optional: true
 
+  node-addon-api@5.1.0:
+    resolution: {integrity: sha512-eh0GgfEkpnoWDq+VY8OyvYhFEzBk6jIYbRKdIlyTiAXIVJ8PyBaKb0rp7oDtoddbdoHWhq8wwr+XZ81F1rpNdA==}
+
   node-addon-api@7.1.1:
     resolution: {integrity: sha512-5m3bsyrjFWE1xf7nz7YXdN4udnVtXK6/Yfgn5qnahL6bCkf2yKt4k3nuTKAtT4r3IG8JNR2ncsIMdZuAzJjHQQ==}
 
@@ -5310,10 +5317,12 @@ packages:
 
 snapshots:
 
-  '@adonisjs/hash@9.0.5':
+  '@adonisjs/hash@9.0.5(bcrypt@5.1.1(encoding@0.1.13))':
     dependencies:
       '@phc/format': 1.0.0
       '@poppinss/utils': 6.8.3
+    optionalDependencies:
+      bcrypt: 5.1.1(encoding@0.1.13)
 
   '@alloc/quick-lru@5.2.0': {}
 
@@ -7519,6 +7528,15 @@ snapshots:
 
   base64-js@1.5.1: {}
 
+  bcrypt@5.1.1(encoding@0.1.13):
+    dependencies:
+      '@mapbox/node-pre-gyp': 1.0.11(encoding@0.1.13)
+      node-addon-api: 5.1.0
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+    optional: true
+
   binary-extensions@2.3.0: {}
 
   bindings@1.5.0:
@@ -9334,6 +9352,9 @@ snapshots:
       - uWebSockets.js
       - webpack-sources
 
+  node-addon-api@5.1.0:
+    optional: true
+
   node-addon-api@7.1.1: {}
 
   node-fetch-native@1.6.4: {}
@@ -9386,9 +9407,9 @@ snapshots:
 
   nuxi@3.14.0: {}
 
-  nuxt-auth-utils@0.4.4(magicast@0.3.5)(rollup@4.20.0)(webpack-sources@3.2.3):
+  nuxt-auth-utils@0.4.4(bcrypt@5.1.1(encoding@0.1.13))(magicast@0.3.5)(rollup@4.20.0)(webpack-sources@3.2.3):
     dependencies:
-      '@adonisjs/hash': 9.0.5
+      '@adonisjs/hash': 9.0.5(bcrypt@5.1.1(encoding@0.1.13))
       '@nuxt/kit': 3.13.2(magicast@0.3.5)(rollup@4.20.0)(webpack-sources@3.2.3)
       defu: 6.1.4
       hookable: 5.5.3

@@ -8,6 +8,27 @@
       "when": 1702053632535,
       "tag": "0000_heavy_xorn",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1729923105656,
+      "tag": "0001_shocking_prima",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1729930329127,
+      "tag": "0002_omniscient_blade",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1729932493502,
+      "tag": "0003_gigantic_thanos",
+      "breakpoints": true
     }
   ]
 }
