@@ -14,7 +14,10 @@ export default defineEventHandler(async (event) => {
     const user = await useDB().query.users.findFirst({
       with: {
         role: true
-      }
+      },
+      where: eq(tables.users, {
+        username, password
+      })
     })
 
     if (!user) {
@@ -30,7 +33,7 @@ export default defineEventHandler(async (event) => {
           id: user.id,
           login: user.username,
           name: user.name,
-          role: user.role
+          role: user.role?.name || 'user'
         }
       })
 
