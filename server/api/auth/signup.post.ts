@@ -41,7 +41,8 @@ export default defineEventHandler(async (event) => {
           login: user.username,
           name: user.name,
           role: getRole?.name || 'user'
-        }
+        },
+        loggedInAt: new Date()
       })
       return { success: true, user }
     }

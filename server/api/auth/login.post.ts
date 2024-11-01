@@ -12,12 +12,7 @@ export default defineEventHandler(async (event) => {
     })
 
     const user = await useDB().query.users.findFirst({
-      with: {
-        role: true
-      },
-      where: eq(tables.users, {
-        username, password
-      })
+      where: (users, { eq }) => eq(users.username, username)
     })
 
     if (!user) {
@@ -26,18 +21,26 @@ export default defineEventHandler(async (event) => {
         statusMessage: 'Invalid username or password'
       })
     }
-    else {
+
+    if (await verifyPassword(user?.password, password)) {
       // Set user session
       await setUserSession(event, {
         user: {
           id: user.id,
           login: user.username,
           name: user.name,
-          role: user.role?.name || 'user'
-        }
+          role: 'user'
+        },
+        loggedInAt: new Date()
       })
 
       return { success: true, user }
+    }
+    else {
+      return createError({
+        statusCode: 401,
+        statusMessage: 'Invalid username or password'
+      })
     }
   }
   catch (error) {
