@@ -12,7 +12,10 @@ export default defineEventHandler(async (event) => {
     })
 
     const user = await useDB().query.users.findFirst({
-      where: (users, { eq }) => eq(users.username, username)
+      where: (users, { eq }) => eq(users.username, username),
+      with: {
+        role: true
+      }
     })
 
     if (!user) {

@@ -1,4 +1,4 @@
-import { relations } from 'drizzle-orm';
+import { relations } from 'drizzle-orm'
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
 
 export const todos = sqliteTable('todos', {
@@ -16,9 +16,13 @@ export const roles = sqliteTable('roles', {
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 })
 
+export const rolesRelations = relations(roles, ({ many }) => ({
+  users: many(users)
+}))
+
 export const users = sqliteTable('users', {
   id: integer('id').primaryKey(({ autoIncrement: true })),
-  roleId: integer('role_id').references(() => roles.id),
+  roleId: integer('role_id'),
   name: text('name').notNull(),
   username: text('username').notNull(),
   password: text('password').notNull(),
@@ -30,8 +34,11 @@ export const users = sqliteTable('users', {
 })
 
 export const usersRelations = relations(users, ({ one }) => ({
-  role: one(roles)
-}));
+  role: one(roles, {
+    fields: [users.roleId],
+    references: [roles.id]
+  })
+}))
 
 export const candidates = sqliteTable('candidates', {
   id: integer('id').primaryKey(({ autoIncrement: true })),
