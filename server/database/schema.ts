@@ -96,6 +96,13 @@ export const tps = sqliteTable('tps', {
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 })
 
+export const tpsRelations = relations(tps, ({ one }) => ({
+  village: one(villages, {
+    fields: [tps.villageId],
+    references: [villages.id]
+  })
+}))
+
 // VOTES
 export const tpsVotes = sqliteTable('tps_votes', {
   id: integer('id').primaryKey(({ autoIncrement: true })),
@@ -116,6 +123,29 @@ export const tpsVotes = sqliteTable('tps_votes', {
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 })
 
+export const tpsVotesRelations = relations(tpsVotes, ({ one }) => ({
+  province: one(provinces, {
+    fields: [tpsVotes.provinceId],
+    references: [provinces.id]
+  }),
+  regency: one(regencies, {
+    fields: [tpsVotes.regencyId],
+    references: [regencies.id]
+  }),
+  district: one(district, {
+    fields: [tpsVotes.districtId],
+    references: [district.id]
+  }),
+  village: one(villages, {
+    fields: [tpsVotes.villageId],
+    references: [villages.id]
+  }),
+  tps: one(tps, {
+    fields: [tpsVotes.tpsId],
+    references: [tps.id]
+  })
+}))
+
 // Candidate Votes
 export const candidateVotes = sqliteTable('candidate_votes', {
   id: integer('id').primaryKey(({ autoIncrement: true })),
@@ -126,3 +156,14 @@ export const candidateVotes = sqliteTable('candidate_votes', {
   createdAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 })
+
+export const candidateVotesRelations = relations(candidateVotes, ({ one }) => ({
+  vote: one(tpsVotes, {
+    fields: [candidateVotes.voteId],
+    references: [tpsVotes.id]
+  }),
+  candidate: one(candidates, {
+    fields: [candidateVotes.candidateId],
+    references: [candidates.id]
+  })
+}))
