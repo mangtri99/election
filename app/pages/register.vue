@@ -8,6 +8,8 @@ const schema = z.object({
   password: z.string().min(8, 'Must be at least 8 characters')
 })
 
+const router = useRouter()
+
 type Schema = z.output<typeof schema>
 
 const state = reactive<Schema>({
@@ -28,7 +30,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   })
 
   if (response) {
-    console.log(response)
+    router.push('/')
   }
 }
 </script>
@@ -37,7 +39,9 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   <div>
     <UCard>
       <template #header>
-        <h2>Register</h2>
+        <h2>
+          Register
+        </h2>
       </template>
 
       <UForm
@@ -69,9 +73,19 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
           />
         </UFormGroup>
 
-        <UButton type="submit">
-          Register
-        </UButton>
+        <div class="flex items-center space-x-4">
+          <UButton type="submit">
+            Register
+          </UButton>
+          <p>
+            Already have an account? <NuxtLink
+              class="text-primary-500"
+              to="/login"
+            >
+              Login
+            </NuxtLink>
+          </p>
+        </div>
       </UForm>
     </UCard>
   </div>

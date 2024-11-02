@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
           id: user.id,
           login: user.username,
           name: user.name,
-          role: 'user'
+          role: user.role?.name || 'user'
         },
         loggedInAt: new Date()
       })

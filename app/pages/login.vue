@@ -2,7 +2,11 @@
 import { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
 
-const router = useRouter()
+definePageMeta({
+  middleware: 'guest'
+})
+
+// const router = useRouter()
 
 const schema = z.object({
   username: z.string().min(4, 'Must be at least 4 characters'),
@@ -26,8 +30,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   })
 
   if (login) {
-    console.log(login)
-    router.push('/')
+    navigateTo('/')
   }
 }
 </script>
@@ -62,9 +65,19 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
           />
         </UFormGroup>
 
-        <UButton type="submit">
-          Submit
-        </UButton>
+        <div class="flex items-center space-x-4">
+          <UButton type="submit">
+            Submit
+          </UButton>
+          <p>
+            Don't have an account? <NuxtLink
+              to="/register"
+              class="text-primary-500"
+            >
+              Register
+            </NuxtLink>
+          </p>
+        </div>
       </UForm>
     </UCard>
   </div>
