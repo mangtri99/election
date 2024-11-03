@@ -7,18 +7,36 @@ export default defineEventHandler(async (event) => {
       username,
       phoneNumber,
       password,
-      roleId
+      roleId,
+      image
     } = await useValidatedBody(event, {
       name: z.string().min(4).max(100),
       username: z.string().min(4).max(100),
       password: z.string().min(8).max(100),
       phoneNumber: z.string().nullish(),
-      roleId: z.number().nullish()
+      roleId: z.number().nullish(),
+      image: z.any().nullish()
     })
 
     const hashedPassword = await hashPassword(password)
 
+    // return { success: true, uploadImage }
+
     try {
+      // const uploadImage = await hubBlob().handleUpload(event, {
+      //   formKey: 'image',
+      //   multiple: false, // when `true`, the `formKey` field will be an array of `Blob` objects
+      //   ensure: {
+      //     maxSize: '8MB',
+      //     types: ['image/png', 'image/jpeg']
+      //   },
+      //   put: {
+      //     addRandomSuffix: true
+      //   }
+      // })
+
+      // console.log('uploadImage:', uploadImage)
+
       // create user
       const user = await useDB().insert(tables.users).values({
         name: name,
@@ -26,6 +44,7 @@ export default defineEventHandler(async (event) => {
         password: hashedPassword,
         phoneNumber: phoneNumber,
         roleId: roleId || null,
+        image: image || null,
         updatedAt: new Date(),
         createdAt: new Date()
       }).returning().get()
