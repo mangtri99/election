@@ -6,6 +6,11 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@pinia/nuxt'
   ],
+  runtimeConfig: {
+    jwtSecret: process.env.NUXT_JWT_SECRET,
+    jwtRefreshSecret: process.env.NUXT_JWT_REFRESH_SECRET,
+    jwtExpiresIn: process.env.NUXT_JWT_EXPIRES_IN || '30d'
+  },
   devtools: {
     enabled: true
   },
@@ -29,5 +34,5 @@ export default defineNuxtConfig({
         commaDangle: 'never'
       }
     }
-  }
+  },
 })

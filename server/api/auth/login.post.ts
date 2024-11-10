@@ -1,3 +1,4 @@
+import { User } from '#auth-utils'
 import { useValidatedBody, z } from 'h3-zod'
 
 export default defineEventHandler(async (event) => {
@@ -26,15 +27,25 @@ export default defineEventHandler(async (event) => {
     }
 
     if (await verifyPassword(user?.password, password)) {
+
+      const createUserAuth: User = {
+        id: user.id,
+        login: user.username,
+        name: user.name,
+        role: user.role?.name || 'user'
+      }
+
+      const createJwtToken = generateToken(createUserAuth)
+      const createJwtRefreshToken = generateRefreshToken(createUserAuth)
+
       // Set user session
       await setUserSession(event, {
-        user: {
-          id: user.id,
-          login: user.username,
-          name: user.name,
-          role: user.role?.name || 'user'
-        },
-        loggedInAt: new Date()
+        user: createUserAuth,
+        loggedInAt: new Date(),
+        secure: {
+          token: createJwtToken,
+          refreshToken: createJwtRefreshToken
+        }
       })
 
       return { success: true, user }

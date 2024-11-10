@@ -7,7 +7,7 @@ const newTodo = ref('')
 const newTodoInput = ref(null)
 
 const toast = useToast()
-const { user, clear } = useUserSession()
+const { user, clear, session } = useUserSession()
 const { data: todos, refresh } = await useFetch('/api/todos')
 
 async function addTodo() {
@@ -74,6 +74,8 @@ const items = [[{
         </NuxtLink>
       </h3>
 
+      
+
       <UDropdown
         v-if="user"
         :items="items"
@@ -112,6 +114,8 @@ const items = [[{
         :disabled="newTodo.trim().length === 0"
       />
     </div>
+
+    <div>{{JSON.stringify(session)}}</div>
 
     <ul class="divide-y divide-gray-200 dark:divide-gray-800">
       <li

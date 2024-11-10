@@ -13,10 +13,12 @@
     "@nuxt/eslint": "^0.6.0",
     "@nuxt/ui": "^2.18.7",
     "@nuxthub/core": "^0.7.33",
+    "@types/jsonwebtoken": "^9.0.7",
     "drizzle-kit": "^0.26.2",
     "drizzle-orm": "0.35.1",
     "h3-zod": "^0.5.3",
-    "nuxt": "^3.13.2",
+    "jsonwebtoken": "^9.0.2",
+    "nuxt": "^3.14.0",
     "nuxt-auth-utils": "^0.4.4",
     "zod": "^3.23.8"
   },
