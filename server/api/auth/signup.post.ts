@@ -21,7 +21,6 @@ export default defineEventHandler(async (event) => {
     const hashedPassword = await hashPassword(password)
 
     try {
-
       // create user
       const user = await useDB().insert(tables.users).values({
         name: name,

@@ -1,4 +1,4 @@
-import type { int } from "drizzle-orm/sqlite-core"
+import type { int } from 'drizzle-orm/sqlite-core'
 
 declare module '#auth-utils' {
   interface User {

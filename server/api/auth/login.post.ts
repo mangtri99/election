@@ -1,5 +1,5 @@
-import { User } from '#auth-utils'
 import { useValidatedBody, z } from 'h3-zod'
+import type { User } from '#auth-utils'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -27,7 +27,6 @@ export default defineEventHandler(async (event) => {
     }
 
     if (await verifyPassword(user?.password, password)) {
-
       const createUserAuth: User = {
         id: user.id,
         login: user.username,

@@ -6,13 +6,13 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@pinia/nuxt'
   ],
+  devtools: {
+    enabled: true
+  },
   runtimeConfig: {
     jwtSecret: process.env.NUXT_JWT_SECRET,
     jwtRefreshSecret: process.env.NUXT_JWT_REFRESH_SECRET,
     jwtExpiresIn: process.env.NUXT_JWT_EXPIRES_IN || '30d'
-  },
-  devtools: {
-    enabled: true
   },
   future: { compatibilityVersion: 4 },
   compatibilityDate: '2024-07-30',
@@ -34,5 +34,5 @@ export default defineNuxtConfig({
         commaDangle: 'never'
       }
     }
-  },
+  }
 })

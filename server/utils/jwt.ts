@@ -1,30 +1,30 @@
-import { User } from '#auth-utils';
-import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken'
+import type { User } from '#auth-utils'
 
 export const generateToken = (user: User) => {
-  const runtimeConfig = useRuntimeConfig();
+  const runtimeConfig = useRuntimeConfig()
   return jwt.sign(user, runtimeConfig.jwtSecret, {
-    expiresIn: runtimeConfig.jwtExpiresIn,
-  });
-};
+    expiresIn: runtimeConfig.jwtExpiresIn
+  })
+}
 
 export const verifyToken = (token: string) => {
-  const runtimeConfig = useRuntimeConfig();
-  return jwt.verify(token, runtimeConfig.jwtSecret);
-};
+  const runtimeConfig = useRuntimeConfig()
+  return jwt.verify(token, runtimeConfig.jwtSecret)
+}
 
 export const generateRefreshToken = (user: User) => {
-  const runtimeConfig = useRuntimeConfig();
+  const runtimeConfig = useRuntimeConfig()
   return jwt.sign(user, runtimeConfig.jwtRefreshSecret, {
-    expiresIn: runtimeConfig.jwtExpiresIn,
-  });
-};
+    expiresIn: runtimeConfig.jwtExpiresIn
+  })
+}
 
 export const verifyRefreshToken = (token: string) => {
-  const runtimeConfig = useRuntimeConfig();
-  return jwt.verify(token, runtimeConfig.jwtRefreshSecret);
-};
+  const runtimeConfig = useRuntimeConfig()
+  return jwt.verify(token, runtimeConfig.jwtRefreshSecret)
+}
 
 export const decodeToken = (token: string) => {
-  return jwt.decode(token);
-};
+  return jwt.decode(token)
+}

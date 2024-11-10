@@ -74,8 +74,6 @@ const items = [[{
         </NuxtLink>
       </h3>
 
-      
-
       <UDropdown
         v-if="user"
         :items="items"
@@ -115,7 +113,7 @@ const items = [[{
       />
     </div>
 
-    <div>{{JSON.stringify(session)}}</div>
+    <div>{{ JSON.stringify(session) }}</div>
 
     <ul class="divide-y divide-gray-200 dark:divide-gray-800">
       <li

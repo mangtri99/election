@@ -6,6 +6,7 @@
     "preview": "nuxt preview",
     "db:generate": "drizzle-kit generate",
     "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
