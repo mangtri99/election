@@ -20,22 +20,7 @@ export default defineEventHandler(async (event) => {
 
     const hashedPassword = await hashPassword(password)
 
-    // return { success: true, uploadImage }
-
     try {
-      // const uploadImage = await hubBlob().handleUpload(event, {
-      //   formKey: 'image',
-      //   multiple: false, // when `true`, the `formKey` field will be an array of `Blob` objects
-      //   ensure: {
-      //     maxSize: '8MB',
-      //     types: ['image/png', 'image/jpeg']
-      //   },
-      //   put: {
-      //     addRandomSuffix: true
-      //   }
-      // })
-
-      // console.log('uploadImage:', uploadImage)
 
       // create user
       const user = await useDB().insert(tables.users).values({

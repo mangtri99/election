@@ -1,8 +1,5 @@
 export default defineEventHandler(async (event) => {
-  const session = await requireUserSession(event)
+  const user = event.context.user
 
-  return {
-    success: true,
-    user: session.user
-  }
+  return successResponse(user)
 })
