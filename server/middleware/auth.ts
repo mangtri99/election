@@ -5,8 +5,6 @@ export default defineEventHandler(async (event) => {
 
   const session = await getUserSession(event)
 
-  console.log('session:', session.secure)
-
   if (!session.secure) {
     const authHeader = event.node.req.headers.authorization
 

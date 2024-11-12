@@ -35,15 +35,14 @@ export default defineEventHandler(async (event) => {
       }
 
       const createJwtToken = await generateToken(createUserAuth)
-      // const createJwtRefreshToken = await generateRefreshToken(createUserAuth)
 
       // Set user session
       await setUserSession(event, {
         user: createUserAuth,
         loggedInAt: new Date(),
+        accessToken: createJwtToken,
         secure: {
           token: createJwtToken
-          // refreshToken: createJwtRefreshToken
         }
       })
 

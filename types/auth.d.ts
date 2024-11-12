@@ -1,5 +1,3 @@
-import type { int } from 'drizzle-orm/sqlite-core'
-
 declare module '#auth-utils' {
   interface User {
     id: number
@@ -11,6 +9,7 @@ declare module '#auth-utils' {
   interface UserSession {
     user: User
     loggedInAt: Date
+    accessToken?: string
     secure: SecureSessionData
   }
 
