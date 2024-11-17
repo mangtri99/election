@@ -1,3 +1,33 @@
+<script lang="ts" setup>
+import { z } from 'zod'
+import type { FormSubmitEvent } from '#ui/types'
+
+const schema = z.object({
+  name: z.string(),
+  villageId: z.number().min(1).refine((value) => {
+    return value > 0
+  }, {
+    message: 'Village is required'
+  }),
+  totalDpt: z.number()
+})
+
+type Schema = z.output<typeof schema>
+
+const { data: tpsOptions } = useFetch('api/tps')
+
+const state = reactive<Schema>({
+  name: '',
+  villageId: 0,
+  totalDpt: 0
+})
+
+async function onSubmit(event: FormSubmitEvent<Schema>) {
+  // Do something with data
+
+}
+</script>
+
 <template>
   <UCard>
     <template #header>
@@ -28,11 +58,13 @@
       >
         <USelectMenu
           v-model="state.villageId"
+          by="id"
+          option-attribute="name"
           searchable
           searchable-placeholder="Search a person..."
           class="w-full lg:w-48"
           placeholder="Select a person"
-          :options="['Wade Cooper', 'Arlene Mccoy', 'Devon Webb', 'Tom Cook', 'Tanya Fox', 'Hellen Schmidt', 'Caroline Schultz', 'Mason Heaney', 'Claudie Smitham', 'Emil Schaefer']"
+          :options="tpsOptions.data"
         />
       </UFormGroup>
 
@@ -54,33 +86,3 @@
     </UForm>
   </UCard>
 </template>
-
-<script lang="ts" setup>
-import { z } from 'zod'
-import type { FormSubmitEvent } from '#ui/types'
-
-const schema = z.object({
-  name: z.string(),
-  villageId: z.number().min(1).refine((value) => {
-    return value > 0
-  }, {
-    message: 'Village is required'
-  }),
-  totalDpt: z.number()
-})
-
-type Schema = z.output<typeof schema>
-
-const { data: tpsOptions } = useFetch('api/tps')
-
-const state = reactive<Schema>({
-  name: '',
-  villageId: 0,
-  totalDpt: 0
-})
-
-async function onSubmit(event: FormSubmitEvent<Schema>) {
-  // Do something with data
-
-}
-</script>

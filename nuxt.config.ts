@@ -12,7 +12,12 @@ export default defineNuxtConfig({
   runtimeConfig: {
     jwtSecret: process.env.NUXT_JWT_SECRET,
     jwtRefreshSecret: process.env.NUXT_JWT_REFRESH_SECRET,
-    jwtExpiresIn: process.env.NUXT_JWT_EXPIRES_IN || '30d'
+    jwtExpiresIn: process.env.NUXT_JWT_EXPIRES_IN || '30d',
+
+    public: {
+      defaultProvinceId: 51,
+      defaultRegencyId: 5107
+    }
   },
   future: { compatibilityVersion: 4 },
   compatibilityDate: '2024-07-30',

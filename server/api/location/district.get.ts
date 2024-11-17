@@ -3,6 +3,8 @@ import type { SQL } from 'drizzle-orm'
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
 
+  console.log('query', query)
+
   const filters: SQL[] = []
   if (query.regencyId) filters.push(eq(tables.district.regencyId, Number(query.regencyId)))
 
