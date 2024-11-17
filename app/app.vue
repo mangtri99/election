@@ -1,16 +1,11 @@
 <script setup>
 const { loggedIn } = useUserSession()
-const colorMode = useColorMode()
 
 watch(loggedIn, () => {
   if (!loggedIn.value) {
     navigateTo('/')
   }
 })
-
-function toggleColorMode() {
-  colorMode.preference = colorMode.preference === 'dark' ? 'light' : 'dark'
-}
 
 useHead({
   htmlAttrs: { lang: 'en' },
@@ -29,37 +24,14 @@ useSeoMeta({
 </script>
 
 <template>
-  <UContainer class="min-h-screen flex flex-col justify-center">
-    <div class="mb-2 text-right">
-      <UButton
-        square
-        variant="ghost"
-        color="black"
-        :icon="$colorMode.preference === 'dark' ? 'i-heroicons-moon' : 'i-heroicons-sun'"
-        @click="toggleColorMode"
-      />
-    </div>
-
+  <NuxtLayout>
+    <NuxtLoadingIndicator color="blue" />
     <NuxtPage />
+  </NuxtLayout>
+  <Teleport to="body">
+    <UNotifications style="bottom: unset; top: 0; left: 0;" />
+  </Teleport>
 
-    <footer class="text-center mt-2">
-      <NuxtLink
-        href="https://github.com/atinux/atidone"
-        target="_blank"
-        class="text-sm text-gray-500 hover:text-gray-700"
-      >
-        GitHub
-      </NuxtLink>
-      ·
-      <NuxtLink
-        href="https://twitter.com/atinux"
-        target="_blank"
-        class="text-sm text-gray-500 hover:text-gray-700"
-      >
-        Twitter
-      </NuxtLink>
-    </footer>
-  </UContainer>
   <UNotifications />
 </template>
 

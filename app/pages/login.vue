@@ -39,7 +39,12 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   <div>
     <UCard>
       <template #header>
-        <h2>Login</h2>
+        <div>
+          <h2>Login</h2>
+          <p class="text-sm text-gray-700">
+            Silakan masukkan username dan password anda
+          </p>
+        </div>
       </template>
 
       <UForm
@@ -69,14 +74,14 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
           <UButton type="submit">
             Submit
           </UButton>
-          <p>
+          <!-- <p>
             Don't have an account? <NuxtLink
               to="/register"
               class="text-primary-500"
             >
               Register
             </NuxtLink>
-          </p>
+          </p> -->
         </div>
       </UForm>
     </UCard>

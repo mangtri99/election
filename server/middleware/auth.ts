@@ -5,32 +5,34 @@ export default defineEventHandler(async (event) => {
 
   const session = await getUserSession(event)
 
-  if (!session.secure) {
-    const authHeader = event.node.req.headers.authorization
+  event.context.user = session.user
 
-    if (!authHeader) {
-      return createError({
-        statusCode: 401,
-        statusMessage: 'Token is required'
-      })
-    }
+  // if (!session.secure) {
+  //   const authHeader = event.node.req.headers.authorization
 
-    const getToken = authHeader.split(' ')[1]
+  //   if (!authHeader) {
+  //     return createError({
+  //       statusCode: 401,
+  //       statusMessage: 'Token is required'
+  //     })
+  //   }
 
-    const verifyJwtToken = await verifyToken(getToken)
+  //   const getToken = authHeader.split(' ')[1]
 
-    // if token is invalid
-    if (!verifyJwtToken) {
-      // event.context.user = null
-      return createError({
-        statusCode: 401,
-        statusMessage: 'Invalid token'
-      })
-    }
+  //   const verifyJwtToken = await verifyToken(getToken)
 
-    event.context.user = decodeToken(getToken)
-  }
-  else {
-    event.context.user = session.user
-  }
+  //   // if token is invalid
+  //   if (!verifyJwtToken) {
+  //     // event.context.user = null
+  //     return createError({
+  //       statusCode: 401,
+  //       statusMessage: 'Invalid token'
+  //     })
+  //   }
+
+  //   event.context.user = decodeToken(getToken)
+  // }
+  // else {
+  //   event.context.user = session.user
+  // }
 })

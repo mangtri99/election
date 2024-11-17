@@ -43,6 +43,13 @@
       "when": 1730530668547,
       "tag": "0005_slim_ultragirl",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1731847198577,
+      "tag": "0006_many_proteus",
+      "breakpoints": true
     }
   ]
 }

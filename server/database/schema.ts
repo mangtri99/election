@@ -111,7 +111,7 @@ export const tpsVotes = sqliteTable('tps_votes', {
   districtId: integer('district_id').references(() => district.id),
   villageId: integer('village_id').references(() => villages.id),
   tpsId: integer('tps_id').references(() => tps.id),
-  tpsNumber: integer('tps_number'),
+  tpsNumber: text('tps_number'),
   totalValidVote: integer('total_valid_vote').notNull().default(0), // total valid vote
   totalInvalidVote: integer('total_invalid_vote').notNull().default(0), // total invalid vote
   totalDptActive: integer('total_dpt_active').notNull().default(0), // voters who voted
@@ -119,7 +119,7 @@ export const tpsVotes = sqliteTable('tps_votes', {
   totalOtherDpt: integer('total_other_dpt').notNull().default(0), // voters who voted from outside the TPS
   totalDpt: integer('total_dpt').notNull().default(0),
   userId: integer('user_id').notNull().references(() => users.id).notNull(), // created by
-  createdAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 })
 
@@ -153,7 +153,7 @@ export const candidateVotes = sqliteTable('candidate_votes', {
   candidateId: integer('candidate_id').references(() => candidates.id).notNull(),
   totalVote: integer('total_vote').notNull().default(0),
   userId: integer('user_id').references(() => users.id).notNull(),
-  createdAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 })
 
