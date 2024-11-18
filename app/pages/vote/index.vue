@@ -41,29 +41,77 @@ const schema = z.object({
   tpsNumber: z.string().min(1, {
     message: 'TPS number is required'
   }),
-  totalValidVote: z.number().min(0).transform((value) => {
+  totalValidVote: z.number({
+    invalid_type_error: 'Wajib diisi',
+    required_error: 'Wajib diisi'
+  }).min(0).transform((value) => {
     if (Number.isNaN(value)) {
       return undefined
     }
 
     else return value
   }),
-  totalInvalidVote: z.number().int().min(0).default(0),
-  totalDptActive: z.number().int().min(0).default(0),
-  totalDptPassive: z.number().int().min(0).default(0),
-  totalOtherDpt: z.number().int().min(0).default(0),
-  totalDpt: z.number().int().min(0).default(0),
+  totalInvalidVote: z.number({
+    invalid_type_error: 'Wajib diisi',
+    required_error: 'Wajib diisi'
+  }).min(0).transform((value) => {
+    if (Number.isNaN(value)) {
+      return undefined
+    }
+
+    else return value
+  }),
+  totalDptActive: z.number({
+    invalid_type_error: 'Wajib diisi',
+    required_error: 'Wajib diisi'
+  }).min(0).transform((value) => {
+    if (Number.isNaN(value)) {
+      return undefined
+    }
+
+    else return value
+  }),
+  totalDptPassive: z.number({
+    invalid_type_error: 'Wajib diisi',
+    required_error: 'Wajib diisi'
+  }).min(0).transform((value) => {
+    if (Number.isNaN(value)) {
+      return undefined
+    }
+
+    else return value
+  }),
+  totalOtherDpt: z.number({
+    invalid_type_error: 'Wajib diisi',
+    required_error: 'Wajib diisi'
+  }).min(0).transform((value) => {
+    if (Number.isNaN(value)) {
+      return undefined
+    }
+
+    else return value
+  }),
+  totalDpt: z.number({
+    invalid_type_error: 'Wajib diisi',
+    required_error: 'Wajib diisi'
+  }).min(0).transform((value) => {
+    if (Number.isNaN(value)) {
+      return undefined
+    }
+
+    else return value
+  }),
   candidateVotes: z.array(z.object({
     candidateId: z.number().int().positive(),
-    totalVote: z.number().min(0).positive().optional().refine((value) => {
-      if (value === undefined || value === null) {
-        return false
+    totalVote: z.number({
+      invalid_type_error: 'Wajib diisi',
+      required_error: 'Wajib diisi'
+    }).min(0).transform((value) => {
+      if (Number.isNaN(value)) {
+        return undefined
       }
-      else {
-        return true
-      }
-    }, {
-      message: 'Perolehan Suara wajib diisi'
+
+      else return value
     })
   }))
 })
@@ -80,7 +128,7 @@ const state = reactive<Schema>({
   tpsId: undefined,
   tpsNumber: '',
   totalValidVote: undefined,
-  totalInvalidVote: 0,
+  totalInvalidVote: undefined,
   totalDptActive: 0,
   totalDptPassive: 0,
   totalOtherDpt: 0,
@@ -201,7 +249,7 @@ const getCandidateInfo = (candidateId: number) => {
         >
           <div class="grid grid-cols-1 md:grid-cols-3 md:space-x-4 space-y-4 md:space-y-0">
             <UCard
-              v-for="candidate in state.candidateVotes"
+              v-for="(candidate, index) in state.candidateVotes"
               :key="candidate.candidateId"
               :ui="{
                 body: {
@@ -223,7 +271,7 @@ const getCandidateInfo = (candidateId: number) => {
                 </div>
                 <UFormGroup
                   label="Perolehan Suara"
-                  name="totalVote"
+                  :name="`candidateVotes.${index}.totalVote`"
                 >
                   <UInput
                     v-model="candidate.totalVote"
