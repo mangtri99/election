@@ -31,8 +31,6 @@ useSeoMeta({
   <Teleport to="body">
     <UNotifications style="bottom: unset; top: 0; left: 0;" />
   </Teleport>
-
-  <UNotifications />
 </template>
 
 <style lang="postcss">

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { z } from 'zod'
-import type { FormSubmitEvent } from '#ui/types'
+import type { FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import type { Candidate, District, Tps, Village } from '~/utils/types'
 
 definePageMeta({
@@ -39,7 +39,7 @@ const schema = z.object({
     name: z.string().optional()
   }), z.number().int().positive().optional()]),
   tpsNumber: z.string().min(1, {
-    message: 'TPS number is required'
+    message: 'Nomor TPS wajib diisi'
   }),
   totalValidVote: z.number({
     invalid_type_error: 'Wajib diisi',
@@ -61,46 +61,34 @@ const schema = z.object({
 
     else return value
   }),
-  totalDptActive: z.number({
-    invalid_type_error: 'Wajib diisi',
-    required_error: 'Wajib diisi'
-  }).min(0).transform((value) => {
+  totalDptActive: z.coerce.number().min(0).transform((value) => {
     if (Number.isNaN(value)) {
       return undefined
     }
 
     else return value
-  }),
-  totalDptPassive: z.number({
-    invalid_type_error: 'Wajib diisi',
-    required_error: 'Wajib diisi'
-  }).min(0).transform((value) => {
+  }).optional(),
+  totalDptPassive: z.coerce.number().min(0).transform((value) => {
     if (Number.isNaN(value)) {
       return undefined
     }
 
     else return value
-  }),
-  totalOtherDpt: z.number({
-    invalid_type_error: 'Wajib diisi',
-    required_error: 'Wajib diisi'
-  }).min(0).transform((value) => {
+  }).optional(),
+  totalOtherDpt: z.coerce.number().min(0).transform((value) => {
     if (Number.isNaN(value)) {
       return undefined
     }
 
     else return value
-  }),
-  totalDpt: z.number({
-    invalid_type_error: 'Wajib diisi',
-    required_error: 'Wajib diisi'
-  }).min(0).transform((value) => {
+  }).optional(),
+  totalDpt: z.coerce.number().min(0).transform((value) => {
     if (Number.isNaN(value)) {
       return undefined
     }
 
     else return value
-  }),
+  }).optional(),
   candidateVotes: z.array(z.object({
     candidateId: z.number().int().positive(),
     totalVote: z.number({
@@ -120,7 +108,7 @@ type Schema = z.output<typeof schema>
 
 const { data: candidateList } = useFetch<APIResponseData<Candidate[]>>('/api/candidate')
 
-const state = reactive<Schema>({
+const defaultState = {
   provinceId: runtimeConfig.public.defaultProvinceId,
   regencyId: runtimeConfig.public.defaultRegencyId,
   districtId: undefined,
@@ -129,10 +117,10 @@ const state = reactive<Schema>({
   tpsNumber: '',
   totalValidVote: undefined,
   totalInvalidVote: undefined,
-  totalDptActive: 0,
-  totalDptPassive: 0,
-  totalOtherDpt: 0,
-  totalDpt: 0,
+  totalDptActive: undefined,
+  totalDptPassive: undefined,
+  totalOtherDpt: undefined,
+  totalDpt: undefined,
   candidateVotes: [
     {
       candidateId: 1,
@@ -147,7 +135,10 @@ const state = reactive<Schema>({
       totalVote: undefined
     }
   ]
-})
+}
+
+const loading = ref(false)
+const state = reactive<Schema>(defaultState)
 
 const search = ref({
   districtId: state.districtId,
@@ -185,42 +176,57 @@ const getTpsOptions = computed(() => {
   }) || []
 })
 
-watch(() => state.districtId, (value) => {
-  // check value is object or number
+watch(() => state.districtId, (value, oldValue) => {
+  if (typeof value === 'object' && typeof oldValue === 'object' && value.id === oldValue?.id) return
   search.value.districtId = typeof value === 'object' ? value.id : value
   state.villageId = undefined
-})
+}, { deep: true })
 
-watch(() => state.villageId, (value) => {
-  // check value is object or number
+watch(() => state.villageId, (value, oldValue) => {
+  if (typeof value === 'object' && typeof oldValue === 'object' && value.id === oldValue?.id) return
   search.value.villageId = typeof value === 'object' ? value.id : value
   state.tpsId = undefined
   state.tpsNumber = ''
-})
+}, { deep: true })
 
-watch(() => state.tpsId, (value) => {
+watch(() => state.tpsId, (value, oldValue) => {
+  if (typeof value === 'object' && typeof oldValue === 'object' && value.id === oldValue?.id) return
   const getId = typeof value === 'object' ? value.id : value
-  console.log(tpsOptions?.value?.data?.find(tps => tps.id === Number(getId)))
   state.tpsNumber = tpsOptions?.value?.data?.find(tps => tps.id === Number(getId))?.name || ''
-})
+}, { deep: true })
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  // Do something with data
-  console.log(event.data)
+  const formatFormRequest = {
+    ...event.data,
+    districtId: typeof event.data.districtId === 'object' ? event.data.districtId.id : event.data.districtId,
+    villageId: typeof event.data.villageId === 'object' ? event.data.villageId.id : event.data.villageId,
+    tpsId: typeof event.data.tpsId === 'object' ? event.data.tpsId.id : event.data.tpsId
+  }
 
-  // const response = await $fetch('/api/votes/tps', {
-  //   method: 'POST',
-  //   body: event.data
-  // })
+  loading.value = true
+  const response = await $fetch('/api/votes/tps', {
+    method: 'POST',
+    body: formatFormRequest,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  loading.value = false
 
-  // if (response) {
-  //   toast.add({
-  //     title: 'Berhasil input data',
-  //     icon: 'i-heroicons-check-circle'
-  //   })
+  if (response) {
+    toast.add({
+      title: 'Berhasil input data',
+      icon: 'i-heroicons-check-circle'
+    })
 
-  //   navigateTo('/votes')
-  // }
+    navigateTo('/')
+  }
+}
+
+async function onError(event: FormErrorEvent) {
+  const element = document.getElementById(event?.errors[0]?.id || '')
+  element?.focus()
+  element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
 }
 
 const getCandidateInfo = (candidateId: number) => {
@@ -245,7 +251,10 @@ const getCandidateInfo = (candidateId: number) => {
           :schema="schema"
           :state="state"
           class="space-y-4"
+          :validate-on="['submit']"
+
           @submit="onSubmit"
+          @error="onError"
         >
           <div class="grid grid-cols-1 md:grid-cols-3 md:space-x-4 space-y-4 md:space-y-0">
             <UCard
@@ -319,6 +328,7 @@ const getCandidateInfo = (candidateId: number) => {
           <UFormGroup
             label="TPS"
             name="tpsId"
+            hint="Kosongkan jika TPS tidak ditemukan"
           >
             <USelectMenu
               v-model="state.tpsId"
@@ -374,6 +384,16 @@ const getCandidateInfo = (candidateId: number) => {
           </UFormGroup>
 
           <UFormGroup
+            label="Total DPT"
+            name="totalDpt"
+          >
+            <UInput
+              v-model="state.totalDpt"
+              type="number"
+            />
+          </UFormGroup>
+
+          <UFormGroup
             label="Total DPT yang menggunakan hak pilih"
             name="totalDptActive"
           >
@@ -403,18 +423,12 @@ const getCandidateInfo = (candidateId: number) => {
             />
           </UFormGroup>
 
-          <UFormGroup
-            label="Total DPT"
-            name="totalDpt"
-          >
-            <UInput
-              v-model="state.totalDpt"
-              type="number"
-            />
-          </UFormGroup>
-
           <div class="flex items-center space-x-4">
-            <UButton type="submit">
+            <UButton
+              type="submit"
+              :loading="loading"
+              :disabled="loading"
+            >
               Simpan
             </UButton>
           </div>

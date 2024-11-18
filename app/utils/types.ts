@@ -27,6 +27,7 @@ export interface Village {
   districtId: number
   createdAt: Date
   updatedAt: Date
+  district?: District
 }
 
 export interface Tps {

@@ -15,8 +15,8 @@ export async function generatePayload(event: H3Event<EventHandlerRequest>) {
     totalDptActive,
     totalDptPassive,
     totalOtherDpt,
-    totalDpt
-
+    totalDpt,
+    candidateVotes
   } = await useValidatedBody(event, {
     provinceId: z.number().int().positive(),
     regencyId: z.number().int().positive(),
@@ -29,8 +29,8 @@ export async function generatePayload(event: H3Event<EventHandlerRequest>) {
     totalDptActive: z.number().int().positive(),
     totalDptPassive: z.number().int().positive(),
     totalOtherDpt: z.number().int().positive().default(0),
-    totalDpt: z.number().int().positive().default(0)
-
+    totalDpt: z.number().int().positive().default(0),
+    candidateVotes: z.any().array().default([])
   })
 
   let getTpsId = tpsId
@@ -89,6 +89,7 @@ export async function generatePayload(event: H3Event<EventHandlerRequest>) {
     totalDptActive,
     totalDptPassive,
     totalOtherDpt,
-    totalDpt
+    totalDpt,
+    candidateVotes
   }
 }

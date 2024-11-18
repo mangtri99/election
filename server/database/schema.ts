@@ -86,6 +86,13 @@ export const villages = sqliteTable('villages', {
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 })
 
+export const villagesRelations = relations(villages, ({ one }) => ({
+  district: one(district, {
+    fields: [villages.districtId],
+    references: [district.id]
+  })
+}))
+
 // TPS
 export const tps = sqliteTable('tps', {
   id: integer('id').primaryKey(({ autoIncrement: true })),

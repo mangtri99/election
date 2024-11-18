@@ -33,9 +33,12 @@ const columns = [
     <h1 class="text-xl mb-4 text-center">
       List Calon Bupati dan Calon Wakil Bupati Karangasem 2025
     </h1>
-    <UTable
-      :rows="data?.data"
-      :columns="columns"
-    />
+    <UCard>
+      <UTable
+        :loading="status === 'pending'"
+        :rows="data?.data"
+        :columns="columns"
+      />
+    </UCard>
   </div>
 </template>
