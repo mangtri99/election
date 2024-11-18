@@ -14,9 +14,9 @@ useHead({
 
 useSeoMeta({
   viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
-  title: 'Atidone',
+  title: 'Aplikasi Pemilu Karisma Karangasem 2025',
   description:
-    'A Nuxt demo hosted with edge-side rendering, authentication and queyring a Cloudflare D1 database',
+    'Karisma Karangasem 2025',
   ogImage: '/social-image.png',
   twitterImage: '/social-image.png',
   twitterCard: 'summary_large_image'
@@ -29,7 +29,7 @@ useSeoMeta({
     <NuxtPage />
   </NuxtLayout>
   <Teleport to="body">
-    <UNotifications style="bottom: unset; top: 0; left: 0;" />
+    <UNotifications />
   </Teleport>
 </template>
 

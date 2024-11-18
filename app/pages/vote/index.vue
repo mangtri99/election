@@ -196,30 +196,42 @@ watch(() => state.tpsId, (value, oldValue) => {
 }, { deep: true })
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  const formatFormRequest = {
-    ...event.data,
-    districtId: typeof event.data.districtId === 'object' ? event.data.districtId.id : event.data.districtId,
-    villageId: typeof event.data.villageId === 'object' ? event.data.villageId.id : event.data.villageId,
-    tpsId: typeof event.data.tpsId === 'object' ? event.data.tpsId.id : event.data.tpsId
-  }
-
-  loading.value = true
-  const response = await $fetch('/api/votes/tps', {
-    method: 'POST',
-    body: formatFormRequest,
-    headers: {
-      'Content-Type': 'application/json'
+  try {
+    const formatFormRequest = {
+      ...event.data,
+      districtId: typeof event.data.districtId === 'object' ? event.data.districtId.id : event.data.districtId,
+      villageId: typeof event.data.villageId === 'object' ? event.data.villageId.id : event.data.villageId,
+      tpsId: typeof event.data.tpsId === 'object' ? event.data.tpsId.id : event.data.tpsId
     }
-  })
-  loading.value = false
 
-  if (response) {
-    toast.add({
-      title: 'Berhasil input data',
-      icon: 'i-heroicons-check-circle'
+    loading.value = true
+    const response = await $fetch('/api/votes/tps', {
+      method: 'POST',
+      body: formatFormRequest,
+      headers: {
+        'Content-Type': 'application/json'
+      }
     })
+    loading.value = false
 
-    navigateTo('/')
+    if (response) {
+      toast.add({
+        title: 'Berhasil input data',
+        icon: 'i-heroicons-check-circle'
+      })
+
+      navigateTo('/')
+    }
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  catch (err: any) {
+    console.error('error:', err?.data?.statusMessage)
+    toast.add({
+      title: 'Gagal input data',
+      description: err?.data?.statusMessage || 'Terjadi kesalahan',
+      icon: 'i-heroicons-x-circle',
+      color: 'red'
+    })
   }
 }
 
@@ -384,7 +396,7 @@ const getCandidateInfo = (candidateId: number) => {
           </UFormGroup>
 
           <UFormGroup
-            label="Total DPT"
+            label="Total DPT (Optional)"
             name="totalDpt"
           >
             <UInput
@@ -394,7 +406,7 @@ const getCandidateInfo = (candidateId: number) => {
           </UFormGroup>
 
           <UFormGroup
-            label="Total DPT yang menggunakan hak pilih"
+            label="Total DPT yang menggunakan hak pilih (Optional)"
             name="totalDptActive"
           >
             <UInput
@@ -404,7 +416,7 @@ const getCandidateInfo = (candidateId: number) => {
           </UFormGroup>
 
           <UFormGroup
-            label="Total DPT yang tidak menggunakan hak pilih"
+            label="Total DPT yang tidak menggunakan hak pilih (Optional)"
             name="totalDptPassive"
           >
             <UInput
@@ -414,7 +426,7 @@ const getCandidateInfo = (candidateId: number) => {
           </UFormGroup>
 
           <UFormGroup
-            label="Total Pemilih diluar DPT"
+            label="Total Pemilih diluar DPT (Optional)"
             name="totalOtherDpt"
           >
             <UInput

@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
   const filters: SQL[] = []
   // filter by, provinceId, regencyId, districtId, villageId, tpsId,
   if (payload.tpsId) {
-    filters.push(eq(tables.tpsVotes, Number(payload.tpsId)))
+    filters.push(eq(tables.tpsVotes.tpsId, Number(payload.tpsId)))
     const checkTpsVote = await useDB().select().from(tables.tpsVotes).where(and(...filters)).get()
 
     if (checkTpsVote) {

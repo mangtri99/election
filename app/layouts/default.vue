@@ -4,17 +4,13 @@
       <div class="flex justify-end">
         <UDropdown
           v-if="user"
+          class="hidden md:flex"
           :items="items"
         >
           <UButton
             color="white"
             trailing-icon="i-heroicons-chevron-down-20-solid"
           >
-            <UAvatar
-              :src="`https://github.com/${user.login}.png`"
-              :alt="user.login"
-              size="3xs"
-            />
             {{ user.login }}
           </UButton>
         </UDropdown>
@@ -28,46 +24,59 @@
       </div>
     </div>
 
-    <div class="flex flex-col md:flex-row md:justify-center py-4">
+    <div class="flex flex-row md:flex-row items-center py-4">
+      <UButton
+        class="md:hidden"
+        icon="i-heroicons-bars-3"
+        variant="ghost"
+        color="gray"
+        @click="isOpen = true"
+      />
       <NuxtLink to="/">
         Aplikasi Pilkada 2025
       </NuxtLink>
     </div>
 
     <div class="md:flex hidden md:flex-row flex-col md:space-x-4 md:justify-center space-y-4 md:space-y-0">
-      <ULink
-        to="/dashboard"
-        active-class="text-primary bg-primary-100 dark:bg-primary-800 px-2 py-1 rounded"
-        inactive-class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-2 py-1"
-      >
-        Dashboard
-      </ULink>
-      <ULink
-        to="/candidate"
-        active-class="text-primary bg-primary-100 dark:bg-primary-800 px-2 py-1 rounded"
-        inactive-class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-2 py-1"
-      >
-        Kandidat Calon
-      </ULink>
-      <ULink
-        to="/tps"
-        active-class="text-primary bg-primary-100 dark:bg-primary-800 px-2 py-1 rounded"
-        inactive-class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-2 py-1"
-      >
-        Daftar TPS
-      </ULink>
-      <ULink
-        to="/vote"
-        active-class="text-primary bg-primary-100 dark:bg-primary-800 px-2 py-1 rounded"
-        inactive-class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-2 py-1"
-      >
-        Voting
-      </ULink>
+      <UHorizontalNavigation
+        :links="links"
+        class="border-b border-gray-200 dark:border-gray-800"
+      />
     </div>
 
     <UDivider class="my-4" />
 
-    <div class="nab" />
+    <USlideover v-model="isOpen">
+      <div class="p-4 flex-1">
+        <UButton
+          color="gray"
+          variant="ghost"
+          size="sm"
+          icon="i-heroicons-x-mark-20-solid"
+          class="flex sm:hidden absolute end-5 top-5 z-10"
+          square
+          padded
+          @click="isOpen = false"
+        />
+
+        <div class="mt-12">
+          <UVerticalNavigation :links="links" />
+          <div class="mt-4">
+            <UDropdown
+              v-if="user"
+              :items="items"
+            >
+              <UButton
+                color="white"
+                trailing-icon="i-heroicons-chevron-down-20-solid"
+              >
+                {{ user.login }}
+              </UButton>
+            </UDropdown>
+          </div>
+        </div>
+      </div>
+    </USlideover>
 
     <div class="flex flex-col flex-1">
       <slot />
@@ -88,6 +97,37 @@ const items = [[{
   icon: 'i-heroicons-arrow-left-on-rectangle',
   click: clear
 }]]
+
+const links = [{
+  label: 'Dashboard',
+  icon: 'i-heroicons-home',
+  to: '/dashboard',
+  click: () => isOpen.value = false
+},
+{
+  label: 'Laporan TPS',
+  icon: 'i-heroicons-document',
+  to: '/report',
+  click: () => isOpen.value = false
+}, {
+  label: 'Kandidat Calon',
+  icon: 'i-heroicons-user-group',
+  to: '/candidate',
+  click: () => isOpen.value = false
+}, {
+  label: 'Daftar TPS',
+  icon: 'i-heroicons-command-line',
+  to: '/tps',
+  click: () => isOpen.value = false
+}, {
+  label: 'Voting',
+  icon: 'i-heroicons-document',
+  to: '/vote',
+  click: () => isOpen.value = false
+}]
+
+const isOpen = ref(false)
+
 function toggleColorMode() {
   colorMode.preference = colorMode.preference === 'dark' ? 'light' : 'dark'
 }
