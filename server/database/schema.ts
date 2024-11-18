@@ -130,7 +130,7 @@ export const tpsVotes = sqliteTable('tps_votes', {
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 })
 
-export const tpsVotesRelations = relations(tpsVotes, ({ one }) => ({
+export const tpsVotesRelations = relations(tpsVotes, ({ one, many }) => ({
   province: one(provinces, {
     fields: [tpsVotes.provinceId],
     references: [provinces.id]
@@ -150,7 +150,8 @@ export const tpsVotesRelations = relations(tpsVotes, ({ one }) => ({
   tps: one(tps, {
     fields: [tpsVotes.tpsId],
     references: [tps.id]
-  })
+  }),
+  candidateVotes: many(candidateVotes)
 }))
 
 // Candidate Votes
