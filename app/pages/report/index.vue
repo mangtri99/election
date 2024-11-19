@@ -1,6 +1,10 @@
 <script setup lang="ts">
 const runtimeConfig = useRuntimeConfig()
 
+definePageMeta({
+  middleware: 'auth'
+})
+
 const filter = ref({
   district: undefined as District | undefined,
   village: undefined as Village | undefined
@@ -50,9 +54,19 @@ const columns = [
     sortable: true
   },
   {
-    key: 'candidateVotes',
-    label: 'Suara Paslon',
-    sortable: false
+    key: 'candidateTotalVote1',
+    label: 'Suara Paslon 1',
+    sortable: true
+  },
+  {
+    key: 'candidateTotalVote2',
+    label: 'Suara Paslon 2',
+    sortable: true
+  },
+  {
+    key: 'candidateTotalVote3',
+    label: 'Suara Paslon 3',
+    sortable: true
   },
   {
     key: 'totalValidVote',
@@ -116,8 +130,8 @@ async function downloadCSV(isAll = true) {
       Laporan TPS Pilkada Karangasem 2025
     </h1>
     <UCard>
-      <div class="flex justify-between items-end">
-        <div class="flex md:flex-row flex-col items-end md:space-x-4 space-y-4 md:space-y-0">
+      <div class="flex flex-col md:flex-row md:justify-between md:items-end space-y-4 md:space-y-0">
+        <div class="flex md:flex-row flex-col md:items-end md:space-x-4 space-y-4 md:space-y-0">
           <UFormGroup
             label="Filter Kecamatan"
             name="districtId"
@@ -151,15 +165,18 @@ async function downloadCSV(isAll = true) {
           </UFormGroup>
 
           <UButton
+            class="w-auto inline-block"
             variant="solid"
+            color="yellow"
             @click="onFilterChange"
           >
             Cari
           </UButton>
         </div>
 
-        <div class="flex space-x-4">
+        <div class="flex md:space-x-4 space-x-2">
           <UButton
+            size="xs"
             variant="solid"
             @click="downloadCSV(false)"
           >
@@ -167,6 +184,7 @@ async function downloadCSV(isAll = true) {
           </UButton>
 
           <UButton
+            size="xs"
             variant="solid"
             @click="downloadCSV"
           >
@@ -179,7 +197,7 @@ async function downloadCSV(isAll = true) {
         :rows="data?.data"
         :columns="columns"
       >
-        <template #candidateVotes-data="{ row }">
+        <!-- <template #candidateVotes-data="{ row }">
           <div>
             <div
               v-for="candidate in row.candidateVotes"
@@ -188,7 +206,7 @@ async function downloadCSV(isAll = true) {
               <p>{{ candidate.candidate?.orderNumber }}. {{ candidate.candidate?.name }} : {{ candidate.totalVote }} </p>
             </div>
           </div>
-        </template>
+        </template> -->
       </UTable>
     </UCard>
   </div>

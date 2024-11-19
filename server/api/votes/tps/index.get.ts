@@ -11,10 +11,24 @@ export default defineEventHandler(async (event) => {
   if (query.villageId) filters.push(eq(tables.tpsVotes.villageId, Number(query.villageId)))
   if (query.tpsId) filters.push(eq(tables.tpsVotes.tpsId, Number(query.tpsId)))
 
+  function transformDataCandidateVotes(data: any = []) {
+    const transformed = {}
+
+    data.candidateVotes.forEach((candidateVote, index) => {
+      const candidateIndex = index + 1 // To align with 1-based indexing
+      transformed[`candidateName${candidateIndex}`] = candidateVote.candidate.name
+      transformed[`candidateTotalVote${candidateIndex}`] = candidateVote.totalVote
+    })
+
+    return transformed
+  }
+
   const tpsVotes = await useDB().query.tpsVotes.findMany({
     where: and(...filters),
+    orderBy: (tv, { desc }) => [desc(tv.id)],
     with: {
       candidateVotes: {
+        orderBy: (cv, { asc }) => [asc(cv.candidateId)],
         with: {
           candidate: true
         }
@@ -27,5 +41,13 @@ export default defineEventHandler(async (event) => {
     }
   })
 
-  return successResponse(tpsVotes)
+  const formattedTpsVotes = tpsVotes.map((tpsVote) => {
+    const transformedCandidateVotes = transformDataCandidateVotes(tpsVote)
+    return {
+      ...tpsVote,
+      ...transformedCandidateVotes
+    }
+  })
+
+  return successResponse(formattedTpsVotes)
 })

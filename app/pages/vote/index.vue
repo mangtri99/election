@@ -346,7 +346,7 @@ const getCandidateInfo = (candidateId: number) => {
           <UFormGroup
             label="TPS"
             name="tpsId"
-            hint="Kosongkan jika TPS tidak ditemukan"
+            help="Kosongkan jika TPS tidak ditemukan"
           >
             <USelectMenu
               v-model="state.tpsId"
@@ -370,7 +370,7 @@ const getCandidateInfo = (candidateId: number) => {
             label="Nomor TPS"
             name="tpsNumber"
             required
-            hint="Nomor TPS otomatis terisi jika TPS sudah dipilih"
+            help="Nomor TPS otomatis terisi jika TPS sudah dipilih"
           >
             <UInput
               v-model="state.tpsNumber"
@@ -434,7 +434,7 @@ const getCandidateInfo = (candidateId: number) => {
           </UFormGroup>
 
           <UFormGroup
-            label="Total DPT yang menggunakan hak pilih (Optional)"
+            label="Total DPT Hadir (Optional)"
             name="totalDptActive"
           >
             <UInput
@@ -444,7 +444,7 @@ const getCandidateInfo = (candidateId: number) => {
           </UFormGroup>
 
           <UFormGroup
-            label="Total DPT yang tidak menggunakan hak pilih (Optional)"
+            label="Total DPT Tidak Hadir (Optional)"
             name="totalDptPassive"
           >
             <UInput
@@ -454,7 +454,7 @@ const getCandidateInfo = (candidateId: number) => {
           </UFormGroup>
 
           <UFormGroup
-            label="Total Pemilih diluar DPT (Optional)"
+            label="Total Pemilih Diluar DPT (Optional)"
             name="totalOtherDpt"
           >
             <UInput

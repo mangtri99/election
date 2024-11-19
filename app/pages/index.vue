@@ -3,7 +3,7 @@ const { loggedIn } = useUserSession()
 </script>
 
 <template>
-  <div class="space-y-4">
+  <div class="space-y-4 flex justify-center">
     <div
       v-if="!loggedIn"
       class="flex justify-end space-x-4"
@@ -15,35 +15,39 @@ const { loggedIn } = useUserSession()
         color="black"
         external
       /> -->
-      <UButton
-        to="/login"
-        icon="i-heroicons-user"
-        label="Login Disini"
-        color="black"
-        external
-      />
     </div>
-    <UCard>
+    <UCard class="max-w-2xl">
       <template #header>
         <h3 class="text-lg font-semibold leading-6">
           Aplikasi Hitung Pilkada 2025
         </h3>
-
-        <!-- <UButton
-          v-if="loggedIn"
-          to="/todos"
-          icon="i-heroicons-list-bullet"
-          label="Go to Todos"
-          color="black"
-        /> -->
       </template>
-      <p class="font-medium">
-        Welcome to Atidone.
-      </p>
+      <div>
+        <p
+          v-if="!loggedIn"
+          class="mb-4 text-gray"
+        >
+          Silakan Login terlebih dahulu
+        </p>
+        <UButton
+          v-if="!loggedIn"
+          to="/login"
+          icon="i-heroicons-user"
+          label="Login Disini"
+          color="black"
+          external
+        />
+        <UButton
+          v-if="loggedIn"
+          to="/vote"
+          icon="i-heroicons-archive-box"
+          label="Buat Laporan Suara"
+          color="black"
+        />
+      </div>
       <hr class="dark:border-gray-700">
       <p class="text-sm text-gray-700 dark:text-gray-300 italic">
-        No personal informations regarding your GitHub account are stored in database.<br>
-        We store only the todos created linked with your GitHub ID.
+        Aplikasi ini dibuat untuk memudahkan proses penghitungan suara Pilkada Karangasem 2025
       </p>
     </UCard>
   </div>

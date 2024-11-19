@@ -62,6 +62,14 @@
         <div class="mt-12">
           <UVerticalNavigation :links="links" />
           <div class="mt-4">
+            <UButton
+              v-if="!loggedIn"
+              to="/login"
+              icon="i-heroicons-user"
+              label="Login Disini"
+              color="black"
+              external
+            />
             <UDropdown
               v-if="user"
               :items="items"
@@ -90,7 +98,7 @@
 
 <script lang="ts" setup>
 const colorMode = useColorMode()
-const { user, clear } = useUserSession()
+const { user, clear, loggedIn } = useUserSession()
 
 const items = [[{
   label: 'Logout',
