@@ -10,6 +10,9 @@ const filter = ref({
   village: undefined as Village | undefined
 })
 
+const loading = ref(false)
+const toast = useToast()
+
 const { data: districtOptions } = await useFetch<APIResponseData<District[]>>('/api/location/district', {
   query: {
     regencyId: runtimeConfig.public.defaultRegencyId
@@ -87,40 +90,61 @@ const columns = [
 ]
 
 async function downloadCSV(isAll = true) {
-  let searchQuery = {}
+  try {
+    loading.value = true
+    let searchQuery = {}
 
-  if (isAll) {
-    searchQuery = {
-      all: true,
-      provinceId: runtimeConfig.public.defaultProvinceId,
-      regencyId: runtimeConfig.public.defaultRegencyId
+    if (isAll) {
+      searchQuery = {
+        all: true,
+        provinceId: runtimeConfig.public.defaultProvinceId,
+        regencyId: runtimeConfig.public.defaultRegencyId
+      }
     }
+    else {
+      searchQuery = {
+        all: false,
+        provinceId: runtimeConfig.public.defaultProvinceId,
+        regencyId: runtimeConfig.public.defaultRegencyId,
+        districtId: filter.value.district?.id,
+        villageId: filter.value.village?.id
+      }
+    }
+
+    const response = await $fetch('/api/votes/tps/export', {
+      query: {
+        ...searchQuery
+      }
+    })
+
+    // creata csv from string response
+    const blob = new Blob([response], { type: 'text/csv' })
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'laporan-tps.csv'
+    a.click()
+
+    window.URL.revokeObjectURL(url)
+
+    loading.value = false
+
+    toast.add({
+      title: 'Berhasil melakukan export data',
+      icon: 'i-heroicons-check-circle',
+      color: 'green'
+    })
   }
-  else {
-    searchQuery = {
-      all: false,
-      provinceId: runtimeConfig.public.defaultProvinceId,
-      regencyId: runtimeConfig.public.defaultRegencyId,
-      districtId: filter.value.district?.id,
-      villageId: filter.value.village?.id
-    }
+  catch (error) {
+    console.log(error)
+    loading.value = false
+    toast.add({
+      title: 'Gagal melakukan export data',
+      description: 'Silakan coba lagi',
+      icon: 'i-heroicons-x-circle',
+      color: 'red'
+    })
   }
-
-  const response = await $fetch('/api/votes/tps/export', {
-    query: {
-      ...searchQuery
-    }
-  })
-
-  // creata csv from string response
-  const blob = new Blob([response], { type: 'text/csv' })
-  const url = window.URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = 'laporan-tps.csv'
-  a.click()
-
-  window.URL.revokeObjectURL(url)
 }
 </script>
 
@@ -178,6 +202,8 @@ async function downloadCSV(isAll = true) {
           <UButton
             size="xs"
             variant="solid"
+            :loading="loading"
+            :disabled="loading"
             @click="downloadCSV(false)"
           >
             Export Data Sesuai Filter
@@ -186,6 +212,8 @@ async function downloadCSV(isAll = true) {
           <UButton
             size="xs"
             variant="solid"
+            :loading="loading"
+            :disabled="loading"
             @click="downloadCSV"
           >
             Export Semua Data
