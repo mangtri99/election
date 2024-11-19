@@ -37,8 +37,23 @@ export const usersRelations = relations(users, ({ one }) => ({
   role: one(roles, {
     fields: [users.roleId],
     references: [roles.id]
+  }),
+  userLocation: one(userLocations, {
+    fields: [users.id],
+    references: [userLocations.userId]
   })
 }))
+
+export const userLocations = sqliteTable('user_locations', {
+  id: integer('id').primaryKey(({ autoIncrement: true })),
+  userId: integer('user_id').references(() => users.id).notNull(),
+  provinceId: integer('province_id').references(() => provinces.id),
+  regencyId: integer('regency_id').references(() => regencies.id),
+  districtId: integer('district_id').references(() => district.id),
+  villageId: integer('village_id').references(() => villages.id),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
+})
 
 export const candidates = sqliteTable('candidates', {
   id: integer('id').primaryKey(({ autoIncrement: true })),
@@ -126,6 +141,8 @@ export const tpsVotes = sqliteTable('tps_votes', {
   totalOtherDpt: integer('total_other_dpt').notNull().default(0), // voters who voted from outside the TPS
   totalDpt: integer('total_dpt').notNull().default(0),
   userId: integer('user_id').notNull().references(() => users.id).notNull(), // created by
+  reportName: text('report_name'),
+  reportPhoneNumber: text('report_phone_number'),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 })
@@ -151,8 +168,17 @@ export const tpsVotesRelations = relations(tpsVotes, ({ one, many }) => ({
     fields: [tpsVotes.tpsId],
     references: [tps.id]
   }),
-  candidateVotes: many(candidateVotes)
+  candidateVotes: many(candidateVotes),
+  tpsVoteImages: many(tpsVoteImages)
 }))
+
+export const tpsVoteImages = sqliteTable('tps_vote_images', {
+  id: integer('id').primaryKey(({ autoIncrement: true })),
+  tpsVoteId: integer('tps_vote_id').references(() => tpsVotes.id).notNull(),
+  image: text('image'),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
+})
 
 // Candidate Votes
 export const candidateVotes = sqliteTable('candidate_votes', {

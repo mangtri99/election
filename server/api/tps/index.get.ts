@@ -1,13 +1,7 @@
-import type { SQL } from 'drizzle-orm'
-
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
 
-  const filters: SQL[] = []
-  // filter by, villageId
-  if (query.villageId) filters.push(eq(tables.tps, Number(query.villageId)))
-
-  const tps = await useDB().query.tps.findMany({
+  let tps = await useDB().query.tps.findMany({
     where: (tps, { eq }) => query.villageId ? eq(tps.villageId, Number(query.villageId)) : undefined,
     with: {
       village: {
@@ -17,6 +11,10 @@ export default defineEventHandler(async (event) => {
       }
     }
   })
+
+  if (query.districtId) {
+    tps = tps.filter(tps => tps.village.districtId === Number(query.districtId))
+  }
 
   return successResponse(tps)
 })

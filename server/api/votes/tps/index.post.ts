@@ -19,7 +19,9 @@ export default defineEventHandler(async (event) => {
     totalDptPassive: z.number().positive().optional(),
     totalOtherDpt: z.number().positive().optional(),
     totalDpt: z.number().positive().optional(),
-    candidateVotes: z.any().array().default([])
+    candidateVotes: z.any().array().default([]),
+    reportName: z.string().optional(),
+    reportPhoneNumber: z.string().optional()
   })
 
   let getTpsId = payload.tpsId
@@ -56,7 +58,7 @@ export default defineEventHandler(async (event) => {
       const createTps = await useDB().insert(tables.tps).values({
         name: payload.tpsNumber,
         villageId: Number(payload.villageId),
-        totalDpt: payload.totalDpt,
+        totalDpt: payload.totalDpt ?? 0,
         createdAt: new Date(),
         updatedAt: new Date()
       }).returning().get()

@@ -11,12 +11,17 @@ export default defineEventHandler(async (event) => {
   if (query.villageId) filters.push(eq(tables.tpsVotes, Number(query.villageId)))
   if (query.tpsId) filters.push(eq(tables.tpsVotes, Number(query.tpsId)))
 
-  const tpsVotes = (await useDB().select().from(tables.tpsVotes)
-    .leftJoin(tables.tps, eq(tables.tpsVotes.tpsId, tables.tps.id))
-    .leftJoin(tables.villages, eq(tables.tps.villageId, tables.villages.id))
-    .leftJoin(tables.district, eq(tables.villages.districtId, tables.district.id))
-    .leftJoin(tables.regencies, eq(tables.district.regencyId, tables.regencies.id))
-    .where(and(...filters)).get())
+  const tpsVotes = await useDB().query.tpsVotes.findMany({
+    where: and(...filters),
+    with: {
+      candidateVotes: true,
+      district: true,
+      regency: true,
+      province: true,
+      village: true,
+      tps: true
+    }
+  })
 
   return successResponse(tpsVotes)
 })

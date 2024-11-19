@@ -20,7 +20,9 @@ export default defineEventHandler(async (event) => {
     totalDptPassive: z.number().positive().optional(),
     totalOtherDpt: z.number().positive().optional(),
     totalDpt: z.number().positive().optional(),
-    candidateVotes: z.any().array().default([])
+    candidateVotes: z.any().array().default([]),
+    reportName: z.string().optional(),
+    reportPhoneNumber: z.string().optional()
   })
 
   let getTpsId = payload.tpsId

@@ -39,3 +39,38 @@ export interface Tps {
   updatedAt: Date
   village: Village
 }
+
+export interface CandidateVote {
+  id: number
+  voteId: number
+  candidateId: number
+  totalVote: number
+  userId: number
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface TPSVote {
+  id: number
+  provinceId: number
+  regencyId: number
+  districtId: number
+  villageId: number
+  tpsId: number
+  tpsNumber: string
+  totalValidVote: number
+  totalInvalidVote: number
+  totalDptActive: number
+  totalDptPassive: number
+  totalOtherDpt: number
+  totalDpt: number
+  userId: number
+  createdAt: Date
+  updatedAt: Date
+  candidateVotes: CandidateVote[]
+  district: District
+  regency: District
+  province: District
+  village: District
+  tps: Tps
+}

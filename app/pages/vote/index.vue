@@ -101,7 +101,11 @@ const schema = z.object({
 
       else return value
     })
-  }))
+  })),
+  reportName: z.string().min(1, {
+    message: 'Nama pelapor wajib diisi'
+  }),
+  reportPhoneNumber: z.string().optional()
 })
 
 type Schema = z.output<typeof schema>
@@ -134,7 +138,9 @@ const defaultState = {
       candidateId: 3,
       totalVote: undefined
     }
-  ]
+  ],
+  reportName: '',
+  reportPhoneNumber: ''
 }
 
 const loading = ref(false)
@@ -364,6 +370,7 @@ const getCandidateInfo = (candidateId: number) => {
             label="Nomor TPS"
             name="tpsNumber"
             required
+            hint="Nomor TPS otomatis terisi jika TPS sudah dipilih"
           >
             <UInput
               v-model="state.tpsNumber"
@@ -392,6 +399,27 @@ const getCandidateInfo = (candidateId: number) => {
             <UInput
               v-model="state.totalInvalidVote"
               type="number"
+            />
+          </UFormGroup>
+
+          <UFormGroup
+            label="Nama Pelapor"
+            name="reportName"
+            required
+          >
+            <UInput
+              v-model="state.reportName"
+              type="text"
+            />
+          </UFormGroup>
+
+          <UFormGroup
+            label="Nomor HP Pelapor"
+            name="reportPhoneNumber"
+          >
+            <UInput
+              v-model="state.reportPhoneNumber"
+              type="tel"
             />
           </UFormGroup>
 

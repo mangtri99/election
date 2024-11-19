@@ -1,3 +1,5 @@
-export default defineEventHandler(async (event) => {
-  return 'Hello Nitro'
+export default defineEventHandler(async () => {
+  const users = await useDB().query.users.findMany()
+
+  return successResponse(users)
 })
