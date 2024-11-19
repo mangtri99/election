@@ -146,10 +146,10 @@ const defaultState = {
 const loading = ref(false)
 const state = reactive<Schema>(defaultState)
 
-const search = ref({
-  districtId: state.districtId,
-  villageId: state.villageId
-})
+// const search = ref({
+//   districtId: state.districtId,
+//   villageId: state.villageId
+// })
 
 const { data: districtOptions } = useFetch<APIResponseData<District[]>>('/api/location/district', {
   query: {
@@ -157,24 +157,24 @@ const { data: districtOptions } = useFetch<APIResponseData<District[]>>('/api/lo
   }
 })
 
-const { data: villageOptions, status: statusVillageOptions } = await useAsyncData('village-options', () => $fetch<APIResponseData<Village[]>>(`/api/location/village`, {
-  query: {
-    districtId: search.value.districtId
-  }
-}), {
-  watch: [search.value]
+const { data: villageOptions, status: statusVillageOptions } = await useAsyncData('village-options', () => $fetch<APIResponseData<Village[]>>(`/api/location/village`))
+
+const { data: tpsOptions, status: statusTpsOptions } = await useAsyncData('tps-options', () => $fetch<APIResponseData<Tps[]>>(`/api/tps`))
+
+const filteredVillageOptions = computed(() => {
+  // filter by districtId
+  const getDistrictId = typeof state.districtId === 'object' ? state.districtId.id : state.districtId
+  return villageOptions?.value?.data?.filter(village => village.districtId === getDistrictId) || []
 })
 
-const { data: tpsOptions, status: statusTpsOptions } = await useAsyncData('tps-options', () => $fetch<APIResponseData<Tps[]>>(`/api/tps`, {
-  query: {
-    villageId: search.value.villageId
-  }
-}), {
-  watch: [search.value]
+const filteredTpsOptions = computed(() => {
+  // filter by villageId
+  const getVillageId = typeof state.villageId === 'object' ? state.villageId.id : state.villageId
+  return tpsOptions?.value?.data?.filter(tps => tps.villageId === getVillageId) || []
 })
 
 const getTpsOptions = computed(() => {
-  return tpsOptions?.value?.data?.map((tps) => {
+  return filteredTpsOptions.value.map((tps) => {
     return {
       id: tps.id,
       name: `TPS No. ${tps.name} - ${tps.village.name}`
@@ -184,13 +184,13 @@ const getTpsOptions = computed(() => {
 
 watch(() => state.districtId, (value, oldValue) => {
   if (typeof value === 'object' && typeof oldValue === 'object' && value.id === oldValue?.id) return
-  search.value.districtId = typeof value === 'object' ? value.id : value
+  // search.value.districtId = typeof value === 'object' ? value.id : value
   state.villageId = undefined
 }, { deep: true })
 
 watch(() => state.villageId, (value, oldValue) => {
   if (typeof value === 'object' && typeof oldValue === 'object' && value.id === oldValue?.id) return
-  search.value.villageId = typeof value === 'object' ? value.id : value
+  // search.value.villageId = typeof value === 'object' ? value.id : value
   state.tpsId = undefined
   state.tpsNumber = ''
 }, { deep: true })
@@ -339,6 +339,7 @@ watch(() => state.candidateVotes, () => {
             label="Kelurahan"
             name="villageId"
             required
+            hint="Pilih kecamatan terlebih dahulu"
           >
             <USelectMenu
               v-model="state.villageId"
@@ -349,7 +350,7 @@ watch(() => state.candidateVotes, () => {
               searchable-placeholder="Cari kelurahan..."
               class="w-full"
               placeholder="Pilih Kelurahan/Desa"
-              :options="villageOptions?.data || []"
+              :options="filteredVillageOptions || []"
             />
           </UFormGroup>
 
@@ -357,6 +358,7 @@ watch(() => state.candidateVotes, () => {
             label="TPS"
             name="tpsId"
             help="Kosongkan jika TPS tidak ditemukan"
+            hint="Pilih kelurahan terlebih dahulu"
           >
             <USelectMenu
               v-model="state.tpsId"
