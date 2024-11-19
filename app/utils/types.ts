@@ -74,3 +74,16 @@ export interface TPSVote {
   village: District
   tps: Tps
 }
+
+export interface User {
+  id: number
+  roleId: number | null
+  name: string
+  username: string
+  password: string
+  email: string | null
+  phoneNumber: string | null
+  image: string | null
+  createdAt: Date
+  updatedAt: Date
+}

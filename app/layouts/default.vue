@@ -119,8 +119,13 @@ const links = [{
   click: () => isOpen.value = false
 }, {
   label: 'Kandidat Calon',
-  icon: 'i-heroicons-user-group',
+  icon: 'i-heroicons-user-circle',
   to: '/candidate',
+  click: () => isOpen.value = false
+}, {
+  label: 'Daftar Petugas',
+  icon: 'i-heroicons-user-group',
+  to: '/user',
   click: () => isOpen.value = false
 }, {
   label: 'Daftar TPS',

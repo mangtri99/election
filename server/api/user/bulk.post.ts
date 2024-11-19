@@ -2,13 +2,6 @@ import { useValidatedBody } from 'h3-zod'
 import { z } from 'zod'
 
 export default defineEventHandler(async (event) => {
-  // body:
-  // location: 'district' | 'village'
-  // if location === 'district'
-  // create user for all district
-  // if location === 'village'
-  // create user for all village
-
   const DEFAULT_REGENCY_ID = 5107
   const DEFAULT_ROLE_ID = 2
 
@@ -30,7 +23,7 @@ export default defineEventHandler(async (event) => {
     const createDataUser = [] as typeof tables.users.$inferInsert[]
     getDistricts.forEach(async (district) => {
       createDataUser.push({
-        name: district.name,
+        name: `Petugas ${district.name}`,
         username: createUsername(`${district.name}2025`),
         password: hashedPassword,
         roleId: DEFAULT_ROLE_ID || null,
@@ -58,7 +51,7 @@ export default defineEventHandler(async (event) => {
     // create user for all village
     getVillagesByRegency.forEach(async (village) => {
       createDataUser.push({
-        name: village.name,
+        name: `Petugas ${village.name}`,
         username: createUsername(`${village.name}2025`),
         password: hashedPassword,
         roleId: DEFAULT_ROLE_ID || null,

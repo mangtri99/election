@@ -1,83 +1,56 @@
 <script setup lang="ts">
 import { z } from 'zod'
+import type { User } from '~/utils/types'
 import type { FormErrorEvent, FormSubmitEvent } from '#ui/types'
 
-const { data, status } = await useFetch<APIResponseData<Tps[]>>('/api/tps')
-const { data: villageOptions, status: statusVillageOptions } = await useAsyncData('village-options', () => $fetch<APIResponseData<Village[]>>(`/api/location/village`))
-
+const { data, status } = useFetch<APIResponseData<User[]>>('/api/user')
 const isOpen = ref(false)
 const toast = useToast()
 const loading = ref(false)
 
 const schema = z.object({
-  tpsNumberFrom: z.number({
-    invalid_type_error: 'Wajib diisi',
-    required_error: 'Wajib diisi'
-  }).min(0).transform((value) => {
-    if (Number.isNaN(value)) {
-      return undefined
-    }
-
-    else return value
-  }),
-  tpsNumberTo: z.number({
-    invalid_type_error: 'Wajib diisi',
-    required_error: 'Wajib diisi'
-  }).min(0).transform((value) => {
-    if (Number.isNaN(value)) {
-      return undefined
-    }
-
-    else return value
-  }),
-  villageId: z.number({
-    invalid_type_error: 'Wajib diisi',
-    required_error: 'Wajib diisi'
-  }).min(0).transform((value) => {
-    if (Number.isNaN(value)) {
-      return undefined
-    }
-
-    else return value
-  })
+  location: z.string(),
+  password: z.string().min(8, 'Minimal 8 karakter')
 })
 
 type Schema = z.output<typeof schema>
 
 const state = ref<Schema>({
-  tpsNumberFrom: 1,
-  tpsNumberTo: 10,
-  villageId: undefined
+  location: 'district',
+  password: ''
 })
 
 const columns = [
   {
-    key: 'village.district.name',
-    label: 'Kecamatan',
+    key: 'id',
+    label: 'Nomor',
     sortable: true
   },
   {
-    key: 'village.name',
-    label: 'Kelurahan/Desa',
+    key: 'username',
+    label: 'username',
     sortable: true
   },
   {
     key: 'name',
-    label: 'Nomor TPS',
-    sortable: true
-  },
-  {
-    key: 'totalDpt',
-    label: 'Total DPT',
+    label: 'Nama',
     sortable: true
   }
 
 ]
 
+const options = [{
+  value: 'district',
+  label: 'Per Kecamatan'
+}, {
+  value: 'village',
+  label: 'Per Kelurahan'
+}]
+
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
     loading.value = true
-    const response = await $fetch('/api/tps/bulk', {
+    const response = await $fetch('/api/user/bulk', {
       method: 'POST',
       body: event.data,
       headers: {
@@ -117,12 +90,12 @@ async function onError(event: FormErrorEvent) {
 <template>
   <div>
     <h1 class="text-xl mb-4 text-center">
-      Daftar TPS Pilkada Karangasem
+      Daftar Petugas Pilkada Karangasem 2025
     </h1>
     <div>
       <div class="mb-4">
         <UButton
-          label="Tambah TPS"
+          label="Tambah Petugas"
           @click="isOpen = true"
         />
       </div>
@@ -130,7 +103,7 @@ async function onError(event: FormErrorEvent) {
       <UModal v-model="isOpen">
         <div class="p-4">
           <p class="mb-4">
-            Tambah TPS
+            Tambah Petugas
           </p>
           <UForm
             :schema="schema"
@@ -141,42 +114,23 @@ async function onError(event: FormErrorEvent) {
             @error="onError"
           >
             <UFormGroup
-              label="Nomor TPS Dari"
-              name="tpsNumberFrom"
+              label="Pilih Lokasi"
+              name="location"
+              required
+            >
+              <URadioGroup
+                v-model="state.location"
+                :options="options"
+              />
+            </UFormGroup>
+            <UFormGroup
+              label="Password"
+              name="password"
               required
             >
               <UInput
-                v-model="state.tpsNumberFrom"
-                type="number"
-              />
-            </UFormGroup>
-
-            <UFormGroup
-              label="Nomor TPS Sampai"
-              name="tpsNumberTo"
-              required
-            >
-              <UInput
-                v-model="state.tpsNumberTo"
-                type="number"
-              />
-            </UFormGroup>
-
-            <UFormGroup
-              label="Kelurahan/Desa"
-              name="villageId"
-              required
-            >
-              <USelectMenu
-                v-model="state.villageId"
-                :loading="statusVillageOptions === 'pending' ? true : false"
-                by="id"
-                option-attribute="name"
-                searchable
-                searchable-placeholder="Cari kelurahan..."
-                class="w-full"
-                placeholder="Pilih Kelurahan/Desa"
-                :options="villageOptions?.data || []"
+                v-model="state.password"
+                type="passowrd"
               />
             </UFormGroup>
 
