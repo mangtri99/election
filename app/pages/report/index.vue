@@ -85,6 +85,11 @@ const columns = [
     key: 'reportName',
     label: 'Nama Pelapor',
     sortable: false
+  },
+  {
+    key: 'reportPhoneNumber',
+    label: 'Nomor HP Pelapor',
+    sortable: false
   }
 
 ]
