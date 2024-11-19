@@ -7,6 +7,8 @@ definePageMeta({
 })
 
 // const router = useRouter()
+const toast = useToast()
+const loading = ref(false)
 
 const schema = z.object({
   username: z.string().min(4, 'Must be at least 4 characters'),
@@ -21,16 +23,27 @@ const state = reactive<Schema>({
 })
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  // Do something with data
-  console.log(event.data)
+  try {
+    loading.value = true
+    const login = await $fetch('/api/auth/login', {
+      method: 'POST',
+      body: event.data
+    })
+    loading.value = false
 
-  const login = await $fetch('/api/auth/login', {
-    method: 'POST',
-    body: event.data
-  })
-
-  if (login) {
-    navigateTo('/')
+    if (login) {
+      navigateTo('/?login=true')
+    }
+  }
+  catch (error) {
+    loading.value = false
+    console.error(error)
+    toast.add({
+      title: 'Gagal login',
+      description: 'Username atau password salah',
+      icon: 'i-heroicons-x-circle',
+      color: 'red'
+    })
   }
 }
 </script>

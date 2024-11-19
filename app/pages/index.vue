@@ -1,5 +1,13 @@
 <script setup lang="ts">
 const { loggedIn } = useUserSession()
+
+const route = useRoute()
+
+// check if contain query ?login=true
+if (route.query.login === 'true') {
+  // redirect to login page
+  window.location.href = '/'
+}
 </script>
 
 <template>
