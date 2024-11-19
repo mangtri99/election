@@ -13,6 +13,7 @@ export default defineEventHandler(async (event) => {
 
   // create tps as much as tpsNumberTo - tpsNumberFrom
   // use the number as the name of the tps
+  const createTps = [] as typeof tables.tps.$inferInsert[]
   for (let i = tpsNumberFrom; i <= tpsNumberTo; i++) {
     const checkTpsExist = await useDB().select().from(tables.tps)
       .where(and(eq(tables.tps.name, i.toString()), eq(tables.tps.villageId, villageId)))
@@ -21,17 +22,19 @@ export default defineEventHandler(async (event) => {
     if (checkTpsExist) {
       throw createError({
         status: 400,
-        message: `TPS ${i} yang dimasukkan sudah terdaftar!`
+        message: `TPS Nomor ${i} yang dimasukkan sudah terdaftar!`
       })
     }
 
-    await useDB().insert(tables.tps).values({
+    createTps.push({
       name: i.toString(),
       villageId,
       createdAt: new Date(),
       updatedAt: new Date()
-    }).get()
+    })
   }
+
+  await useDB().insert(tables.tps).values(createTps)
 
   return successResponse({
     message: `TPS ${tpsNumberFrom} - ${tpsNumberTo} berhasil dibuat`

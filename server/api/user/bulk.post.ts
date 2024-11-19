@@ -27,8 +27,9 @@ export default defineEventHandler(async (event) => {
   }
 
   if (payload.location === 'district') {
+    const createDataUser = [] as typeof tables.users.$inferInsert[]
     getDistricts.forEach(async (district) => {
-      await useDB().insert(tables.users).values({
+      createDataUser.push({
         name: district.name,
         username: createUsername(`${district.name}2025`),
         password: hashedPassword,
@@ -37,6 +38,7 @@ export default defineEventHandler(async (event) => {
         createdAt: new Date()
       })
     })
+    await useDB().insert(tables.users).values(createDataUser)
 
     return successResponse({
       message: 'Success create user for all district'
@@ -52,10 +54,10 @@ export default defineEventHandler(async (event) => {
 
     // filter village by district where has regencyId = 5107
     const getVillagesByRegency = getVillages.filter(village => village.district.regencyId === DEFAULT_REGENCY_ID)
-
+    const createDataUser = [] as typeof tables.users.$inferInsert[]
     // create user for all village
     getVillagesByRegency.forEach(async (village) => {
-      await useDB().insert(tables.users).values({
+      createDataUser.push({
         name: village.name,
         username: createUsername(`${village.name}2025`),
         password: hashedPassword,
@@ -64,6 +66,7 @@ export default defineEventHandler(async (event) => {
         createdAt: new Date()
       })
     })
+    await useDB().insert(tables.users).values(createDataUser)
 
     return successResponse({
       message: 'Success create user for all village'
