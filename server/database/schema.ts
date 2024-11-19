@@ -92,6 +92,13 @@ export const district = sqliteTable('districts', {
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 })
 
+export const districtRelations = relations(district, ({ one }) => ({
+  regency: one(regencies, {
+    fields: [district.regencyId],
+    references: [regencies.id]
+  })
+}))
+
 // DESA/KELURAHAN
 export const villages = sqliteTable('villages', {
   id: integer('id').primaryKey(({ autoIncrement: true })),
