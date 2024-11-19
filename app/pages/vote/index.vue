@@ -61,34 +61,46 @@ const schema = z.object({
 
     else return value
   }),
-  totalDptActive: z.coerce.number().min(0).transform((value) => {
+  totalDptActive: z.number({
+    invalid_type_error: 'Wajib diisi',
+    required_error: 'Wajib diisi'
+  }).min(0).transform((value) => {
     if (Number.isNaN(value)) {
       return undefined
     }
 
     else return value
-  }).optional(),
-  totalDptPassive: z.coerce.number().min(0).transform((value) => {
+  }),
+  totalDptPassive: z.number({
+    invalid_type_error: 'Wajib diisi',
+    required_error: 'Wajib diisi'
+  }).min(0).transform((value) => {
     if (Number.isNaN(value)) {
       return undefined
     }
 
     else return value
-  }).optional(),
-  totalOtherDpt: z.coerce.number().min(0).transform((value) => {
+  }),
+  totalOtherDpt: z.number({
+    invalid_type_error: 'Wajib diisi',
+    required_error: 'Wajib diisi'
+  }).min(0).transform((value) => {
     if (Number.isNaN(value)) {
       return undefined
     }
 
     else return value
-  }).optional(),
-  totalDpt: z.coerce.number().min(0).transform((value) => {
+  }),
+  totalDpt: z.number({
+    invalid_type_error: 'Wajib diisi',
+    required_error: 'Wajib diisi'
+  }).min(0).transform((value) => {
     if (Number.isNaN(value)) {
       return undefined
     }
 
     else return value
-  }).optional(),
+  }),
   candidateVotes: z.array(z.object({
     candidateId: z.number().int().positive(),
     totalVote: z.number({
@@ -210,6 +222,18 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       tpsId: typeof event.data.tpsId === 'object' ? event.data.tpsId.id : event.data.tpsId
     }
 
+    const checkVoteIsBalance = (Number(event.data.totalValidVote) + Number(event.data.totalInvalidVote)) === (Number(event.data.totalDptActive) + Number(event.data.totalOtherDpt))
+
+    if (!checkVoteIsBalance) {
+      toast.add({
+        title: 'Total suara tidak balance',
+        description: 'Total suara sah dan tidak sah harus sama dengan total DPT hadir dan diluar DPT',
+        icon: 'i-heroicons-x-circle',
+        color: 'red'
+      })
+      return
+    }
+
     loading.value = true
     const response = await $fetch('/api/votes/tps', {
       method: 'POST',
@@ -257,6 +281,12 @@ watch(() => state.candidateVotes, () => {
   }, 0)
 
   state.totalValidVote = sumTotalVote
+}, {
+  deep: true
+})
+
+watch(() => Number(state.totalDptActive) + Number(state.totalDptPassive), (value) => {
+  state.totalDpt = value
 }, {
   deep: true
 })
@@ -417,6 +447,52 @@ watch(() => state.candidateVotes, () => {
           </UFormGroup>
 
           <UFormGroup
+            label="Total DPT Hadir"
+            name="totalDptActive"
+            required
+          >
+            <UInput
+              v-model="state.totalDptActive"
+              type="number"
+            />
+          </UFormGroup>
+
+          <UFormGroup
+            label="Total DPT Tidak Hadir"
+            name="totalDptPassive"
+            required
+          >
+            <UInput
+              v-model="state.totalDptPassive"
+              type="number"
+            />
+          </UFormGroup>
+
+          <UFormGroup
+            label="Total DPT"
+            name="totalDpt"
+            help="Total DPT akan dihitung otomatis dari total DPT hadir dan tidak hadir"
+            required
+          >
+            <UInput
+              v-model="state.totalDpt"
+              type="number"
+              readonly
+            />
+          </UFormGroup>
+
+          <UFormGroup
+            label="Total Pemilih Diluar DPT"
+            name="totalOtherDpt"
+            required
+          >
+            <UInput
+              v-model="state.totalOtherDpt"
+              type="number"
+            />
+          </UFormGroup>
+
+          <UFormGroup
             label="Nama Pelapor"
             name="reportName"
             required
@@ -434,46 +510,6 @@ watch(() => state.candidateVotes, () => {
             <UInput
               v-model="state.reportPhoneNumber"
               type="tel"
-            />
-          </UFormGroup>
-
-          <UFormGroup
-            label="Total DPT (Optional)"
-            name="totalDpt"
-          >
-            <UInput
-              v-model="state.totalDpt"
-              type="number"
-            />
-          </UFormGroup>
-
-          <UFormGroup
-            label="Total DPT Hadir (Optional)"
-            name="totalDptActive"
-          >
-            <UInput
-              v-model="state.totalDptActive"
-              type="number"
-            />
-          </UFormGroup>
-
-          <UFormGroup
-            label="Total DPT Tidak Hadir (Optional)"
-            name="totalDptPassive"
-          >
-            <UInput
-              v-model="state.totalDptPassive"
-              type="number"
-            />
-          </UFormGroup>
-
-          <UFormGroup
-            label="Total Pemilih Diluar DPT (Optional)"
-            name="totalOtherDpt"
-          >
-            <UInput
-              v-model="state.totalOtherDpt"
-              type="number"
             />
           </UFormGroup>
 
