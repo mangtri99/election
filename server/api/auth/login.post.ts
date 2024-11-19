@@ -31,7 +31,7 @@ export default defineEventHandler(async (event) => {
         id: user.id,
         login: user.username,
         name: user.name,
-        role: user.role?.name || 'user'
+        role: user.role?.name || 'USER'
       }
 
       const createJwtToken = await generateToken(createUserAuth)

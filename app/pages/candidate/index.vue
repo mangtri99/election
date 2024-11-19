@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { APIResponseData, Candidate } from '~/utils/types'
 
-const { data, refresh, clear, error, status } = useFetch<APIResponseData<Candidate[]>>('/api/candidate')
+const { data, status } = useFetch<APIResponseData<Candidate[]>>('/api/candidate')
 
 const columns = [
   {

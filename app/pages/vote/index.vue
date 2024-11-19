@@ -250,6 +250,16 @@ async function onError(event: FormErrorEvent) {
 const getCandidateInfo = (candidateId: number) => {
   return candidateList.value?.data?.find(item => item.id === candidateId)
 }
+
+watch(() => state.candidateVotes, () => {
+  const sumTotalVote = state.candidateVotes.reduce((acc, item) => {
+    return acc + (item.totalVote || 0)
+  }, 0)
+
+  state.totalValidVote = sumTotalVote
+}, {
+  deep: true
+})
 </script>
 
 <template>
@@ -383,11 +393,13 @@ const getCandidateInfo = (candidateId: number) => {
           <UFormGroup
             label="Total Suara Sah"
             name="totalValidVote"
+            help="Total suara sah akan dihitung otomatis dari perolehan suara paslon"
             required
           >
             <UInput
               v-model="state.totalValidVote"
               type="number"
+              readonly
             />
           </UFormGroup>
 

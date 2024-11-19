@@ -12,6 +12,10 @@ interface Summary {
   countTps: number
 }
 
+definePageMeta({
+  middleware: 'auth'
+})
+
 const runtimeConfig = useRuntimeConfig()
 const { data: districtOptions } = await useFetch<APIResponseData<District[]>>('/api/location/district', {
   query: {

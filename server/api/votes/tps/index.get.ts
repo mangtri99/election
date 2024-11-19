@@ -11,10 +11,13 @@ export default defineEventHandler(async (event) => {
   if (query.villageId) filters.push(eq(tables.tpsVotes.villageId, Number(query.villageId)))
   if (query.tpsId) filters.push(eq(tables.tpsVotes.tpsId, Number(query.tpsId)))
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function transformDataCandidateVotes(data: any = []) {
-    const transformed = {}
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const transformed = {} as any
 
-    data.candidateVotes.forEach((candidateVote, index) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    data.candidateVotes.forEach((candidateVote: any, index: number) => {
       const candidateIndex = index + 1 // To align with 1-based indexing
       transformed[`candidateName${candidateIndex}`] = candidateVote.candidate.name
       transformed[`candidateTotalVote${candidateIndex}`] = candidateVote.totalVote

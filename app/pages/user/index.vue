@@ -3,10 +3,16 @@ import { z } from 'zod'
 import type { User } from '~/utils/types'
 import type { FormErrorEvent, FormSubmitEvent } from '#ui/types'
 
+definePageMeta({
+  middleware: 'auth'
+})
+
 const { data, status } = useFetch<APIResponseData<User[]>>('/api/user')
 const isOpen = ref(false)
 const toast = useToast()
 const loading = ref(false)
+
+const { user } = useUserSession()
 
 const schema = z.object({
   location: z.string(),
@@ -93,7 +99,10 @@ async function onError(event: FormErrorEvent) {
       Daftar Petugas Pilkada Karangasem 2025
     </h1>
     <div>
-      <div class="mb-4">
+      <div
+        v-if="user?.role && user?.role.toLowerCase() === 'admin'"
+        class="mb-4"
+      >
         <UButton
           label="Tambah Petugas"
           @click="isOpen = true"

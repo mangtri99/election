@@ -2,12 +2,18 @@
 import { z } from 'zod'
 import type { FormErrorEvent, FormSubmitEvent } from '#ui/types'
 
+definePageMeta({
+  middleware: 'auth'
+})
+
 const { data, status } = await useFetch<APIResponseData<Tps[]>>('/api/tps')
 const { data: villageOptions, status: statusVillageOptions } = await useAsyncData('village-options', () => $fetch<APIResponseData<Village[]>>(`/api/location/village`))
 
 const isOpen = ref(false)
 const toast = useToast()
 const loading = ref(false)
+
+const { user } = useUserSession()
 
 const schema = z.object({
   tpsNumberFrom: z.number({
@@ -120,7 +126,10 @@ async function onError(event: FormErrorEvent) {
       Daftar TPS Pilkada Karangasem
     </h1>
     <div>
-      <div class="mb-4">
+      <div
+        v-if="user?.role && user?.role.toLowerCase() === 'admin'"
+        class="mb-4"
+      >
         <UButton
           label="Tambah TPS"
           @click="isOpen = true"

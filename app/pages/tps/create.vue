@@ -14,7 +14,7 @@ const schema = z.object({
 
 type Schema = z.output<typeof schema>
 
-const { data: tpsOptions } = useFetch('api/tps')
+const { data: villageOptions } = await useAsyncData('village-options', () => $fetch<APIResponseData<Village[]>>(`/api/location/village`))
 
 const state = reactive<Schema>({
   name: '',
@@ -24,7 +24,7 @@ const state = reactive<Schema>({
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   // Do something with data
-
+  console.log(event.data)
 }
 </script>
 
@@ -64,7 +64,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
           searchable-placeholder="Search a person..."
           class="w-full lg:w-48"
           placeholder="Select a person"
-          :options="tpsOptions.data"
+          :options="villageOptions?.data || []"
         />
       </UFormGroup>
 
