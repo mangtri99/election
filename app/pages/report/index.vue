@@ -19,7 +19,20 @@ const { data: districtOptions } = await useFetch<APIResponseData<District[]>>('/
   }
 })
 
-const { data: villageOptions } = await useAsyncData('village-options', () => $fetch<APIResponseData<Village[]>>(`/api/location/village`))
+const { data: villageOptions } = await useAsyncData('village-options', () => $fetch<APIResponseData<Village[]>>(`/api/location/village`, {
+  query: {
+    districtId: [
+      510701,
+      510702,
+      510703,
+      510704,
+      510705,
+      510706,
+      510707,
+      510708
+    ]
+  }
+}))
 const { data, status, refresh } = await useAsyncData('vote-tps-result',
   () => $fetch<APIResponseData<Village[]>>(`/api/votes/tps`, {
     query: {
@@ -31,6 +44,14 @@ const { data, status, refresh } = await useAsyncData('vote-tps-result',
   }))
 
 function onFilterChange() {
+  refresh()
+}
+
+function resetFilter() {
+  filter.value = {
+    district: undefined,
+    village: undefined
+  }
   refresh()
 }
 
@@ -79,6 +100,16 @@ const columns = [
   {
     key: 'totalInvalidVote',
     label: 'Total Suara Tidak Sah',
+    sortable: true
+  },
+  {
+    key: 'totalDpt',
+    label: 'Total DPT',
+    sortable: true
+  },
+  {
+    key: 'totalOtherDpt',
+    label: 'Total Pemilih Diluar DPT',
     sortable: true
   },
   {
@@ -200,6 +231,14 @@ async function downloadCSV(isAll = true) {
             @click="onFilterChange"
           >
             Cari
+          </UButton>
+          <UButton
+            class="w-auto inline-block"
+            variant="solid"
+            color="red"
+            @click="resetFilter"
+          >
+            Hapus Filter
           </UButton>
         </div>
 

@@ -49,8 +49,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
-  <div>
-    <UCard>
+  <div class="flex justify-center">
+    <UCard class="max-w-2xl w-full">
       <template #header>
         <div>
           <h2>Login</h2>
@@ -84,7 +84,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         </UFormGroup>
 
         <div class="flex items-center space-x-4">
-          <UButton type="submit">
+          <UButton
+            type="submit"
+            :loading="loading"
+            :disabled="loading"
+          >
             Submit
           </UButton>
           <!-- <p>
