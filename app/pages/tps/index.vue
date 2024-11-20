@@ -7,7 +7,20 @@ definePageMeta({
 })
 
 const { data, status } = await useFetch<APIResponseData<Tps[]>>('/api/tps')
-const { data: villageOptions, status: statusVillageOptions } = await useAsyncData('village-options', () => $fetch<APIResponseData<Village[]>>(`/api/location/village`))
+const { data: villageOptions, status: statusVillageOptions } = await useAsyncData('village-options', () => $fetch<APIResponseData<Village[]>>(`/api/location/village`, {
+  query: {
+    districtId: [
+      510701,
+      510702,
+      510703,
+      510704,
+      510705,
+      510706,
+      510707,
+      510708
+    ]
+  }
+}))
 
 const isOpen = ref(false)
 const toast = useToast()

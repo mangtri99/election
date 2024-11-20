@@ -18,6 +18,17 @@ export const ZodStringNumberOrUndefined = z
   })
   .transform(value => (value === undefined ? undefined : Number(value)))
 
+export const ZodNumberDefaultUndefined = (message = 'Wajib diisi') => z.number({
+  invalid_type_error: message,
+  required_error: message
+}).min(0).transform((value) => {
+  if (Number.isNaN(value)) {
+    return undefined
+  }
+
+  else return value
+})
+
 export const zodInputStringPipe = (zodPipe: ZodTypeAny) =>
   z
     .string()

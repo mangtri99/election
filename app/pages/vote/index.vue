@@ -2,6 +2,7 @@
 import { z } from 'zod'
 import type { FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import type { Candidate, District, Tps, Village } from '~/utils/types'
+import { ZodNumberDefaultUndefined } from '~/utils/validation'
 
 definePageMeta({
   middleware: 'auth'
@@ -41,78 +42,15 @@ const schema = z.object({
   tpsNumber: z.string().min(1, {
     message: 'Nomor TPS wajib diisi'
   }),
-  totalValidVote: z.number({
-    invalid_type_error: 'Wajib diisi',
-    required_error: 'Wajib diisi'
-  }).min(0).transform((value) => {
-    if (Number.isNaN(value)) {
-      return undefined
-    }
-
-    else return value
-  }),
-  totalInvalidVote: z.number({
-    invalid_type_error: 'Wajib diisi',
-    required_error: 'Wajib diisi'
-  }).min(0).transform((value) => {
-    if (Number.isNaN(value)) {
-      return undefined
-    }
-
-    else return value
-  }),
-  totalDptActive: z.number({
-    invalid_type_error: 'Wajib diisi',
-    required_error: 'Wajib diisi'
-  }).min(0).transform((value) => {
-    if (Number.isNaN(value)) {
-      return undefined
-    }
-
-    else return value
-  }),
-  totalDptPassive: z.number({
-    invalid_type_error: 'Wajib diisi',
-    required_error: 'Wajib diisi'
-  }).min(0).transform((value) => {
-    if (Number.isNaN(value)) {
-      return undefined
-    }
-
-    else return value
-  }),
-  totalOtherDpt: z.number({
-    invalid_type_error: 'Wajib diisi',
-    required_error: 'Wajib diisi'
-  }).min(0).transform((value) => {
-    if (Number.isNaN(value)) {
-      return undefined
-    }
-
-    else return value
-  }),
-  totalDpt: z.number({
-    invalid_type_error: 'Wajib diisi',
-    required_error: 'Wajib diisi'
-  }).min(0).transform((value) => {
-    if (Number.isNaN(value)) {
-      return undefined
-    }
-
-    else return value
-  }),
+  totalValidVote: ZodNumberDefaultUndefined(),
+  totalInvalidVote: ZodNumberDefaultUndefined(),
+  totalDptActive: ZodNumberDefaultUndefined(),
+  totalDptPassive: ZodNumberDefaultUndefined(),
+  totalOtherDpt: ZodNumberDefaultUndefined(),
+  totalDpt: ZodNumberDefaultUndefined(),
   candidateVotes: z.array(z.object({
     candidateId: z.number().int().positive(),
-    totalVote: z.number({
-      invalid_type_error: 'Wajib diisi',
-      required_error: 'Wajib diisi'
-    }).min(0).transform((value) => {
-      if (Number.isNaN(value)) {
-        return undefined
-      }
-
-      else return value
-    })
+    totalVote: ZodNumberDefaultUndefined()
   })),
   reportName: z.string().min(1, {
     message: 'Nama pelapor wajib diisi'
@@ -157,11 +95,6 @@ const defaultState = {
 
 const loading = ref(false)
 const state = reactive<Schema>(defaultState)
-
-// const search = ref({
-//   districtId: state.districtId,
-//   villageId: state.villageId
-// })
 
 const { data: districtOptions } = useFetch<APIResponseData<District[]>>('/api/location/district', {
   query: {
