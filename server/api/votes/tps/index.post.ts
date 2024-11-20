@@ -14,15 +14,15 @@ export default defineEventHandler(async (event) => {
     villageId: z.number().int().positive(),
     tpsId: z.number().int().positive().optional(),
     tpsNumber: z.string(),
-    totalValidVote: z.number().int().positive(),
-    totalInvalidVote: z.number().int().positive(),
-    totalDptActive: z.number().positive().optional(),
-    totalDptPassive: z.number().positive().optional(),
-    totalOtherDpt: z.number().positive().optional(),
-    totalDpt: z.number().positive().optional(),
+    totalValidVote: z.number().min(0),
+    totalInvalidVote: z.number().min(0),
+    totalDptActive: z.number().min(0).optional(),
+    totalDptPassive: z.number().min(0).optional(),
+    totalOtherDpt: z.number().min(0).optional(),
+    totalDpt: z.number().min(0).optional(),
     candidateVotes: z.any().array().default([]),
-    reportName: z.string().optional(),
-    reportPhoneNumber: z.string().optional()
+    reportName: z.string().min(0).optional(),
+    reportPhoneNumber: z.string().min(0).optional()
   })
 
   let getTpsId = payload.tpsId
