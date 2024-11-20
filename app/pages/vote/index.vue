@@ -256,6 +256,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   catch (err: any) {
     console.error('error:', err?.data?.statusMessage)
+    loading.value = false
     toast.add({
       title: 'Gagal input data',
       description: err?.data?.statusMessage || 'Terjadi kesalahan',
@@ -395,6 +396,7 @@ watch(() => Number(state.totalDptActive) + Number(state.totalDptPassive), (value
               :loading="statusTpsOptions === 'pending' ? true : false"
               by="id"
               option-attribute="name"
+              clearable
               searchable
               searchable-placeholder="Cari TPS..."
               class="w-full"
@@ -405,6 +407,24 @@ watch(() => Number(state.totalDptActive) + Number(state.totalDptPassive), (value
               <template #empty>
                 TPS Tidak Ditemukan
               </template>
+              <UInput
+                class="flex-1 cursor-pointer"
+                placeholder="Pilih TPS"
+                :model-value="typeof state.tpsId === 'object' ? state.tpsId.name : state.tpsId"
+                :ui="{ icon: { trailing: { pointer: '' } } }"
+                readonly
+              >
+                <template #trailing>
+                  <UButton
+                    v-show="state.tpsId"
+                    icon="i-heroicons-x-mark"
+                    :padded="false"
+                    color="gray"
+                    variant="ghost"
+                    @click.stop="state.tpsId = undefined"
+                  />
+                </template>
+              </UInput>
             </USelectMenu>
           </UFormGroup>
 

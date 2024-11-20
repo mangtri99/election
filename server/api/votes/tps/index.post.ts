@@ -5,6 +5,7 @@ import { z } from 'zod'
 
 export default defineEventHandler(async (event) => {
   // const payload = await generatePayload(event)
+  const { user } = await requireUserSession(event)
 
   const payload = await useValidatedBody(event, {
     provinceId: z.number().int().positive(),
@@ -69,7 +70,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const createTpsVote = await useDB().insert(tables.tpsVotes).values({
-    userId: Number(event.context.user.id),
+    userId: Number(user.id),
     ...payload,
     tpsId: getTpsId,
     tpsNumber: getTpsNumber,
@@ -77,16 +78,21 @@ export default defineEventHandler(async (event) => {
     updatedAt: new Date()
   }).returning().get()
 
+  const createCandidateVotes = [] as typeof tables.candidateVotes.$inferInsert[]
   payload.candidateVotes?.forEach(async (candidateVote) => {
-    await useDB().insert(tables.candidateVotes).values({
+    createCandidateVotes.push({
       voteId: createTpsVote.id,
       candidateId: candidateVote.candidateId,
       totalVote: candidateVote.totalVote,
-      userId: Number(event.context.user.id),
+      userId: Number(user.id),
       createdAt: new Date(),
       updatedAt: new Date()
-    }).returning().get()
+    })
   })
 
-  return successResponse(createTpsVote)
+  await useDB().insert(tables.candidateVotes).values(createCandidateVotes)
+
+  return successResponse({
+    message: 'Laporan TPS berhasil disimpan'
+  })
 })
