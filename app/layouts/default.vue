@@ -106,49 +106,49 @@ const items = [[{
   click: clear
 }]]
 
-const links = ref([{
-  label: 'Dashboard',
-  icon: 'i-heroicons-home',
-  to: '/dashboard',
-  click: () => isOpen.value = false
-},
-{
-  label: 'Laporan TPS',
-  icon: 'i-heroicons-document',
-  to: '/report',
-  click: () => isOpen.value = false
-}, {
-  label: 'Kandidat Calon',
-  icon: 'i-heroicons-user-circle',
-  to: '/candidate',
-  click: () => isOpen.value = false
-}, {
-  label: 'Daftar Petugas',
-  icon: 'i-heroicons-user-group',
-  to: '/user',
-  click: () => isOpen.value = false
-}, {
-  label: 'Daftar TPS',
-  icon: 'i-heroicons-command-line',
-  to: '/tps',
-  click: () => isOpen.value = false
-}, {
-  label: 'Voting',
-  icon: 'i-heroicons-document',
-  to: '/vote',
-  click: () => isOpen.value = false
-}])
+const links = ref([
+  {
+    label: 'Voting',
+    icon: 'i-heroicons-document',
+    to: '/vote',
+    click: () => isOpen.value = false
+  }
+])
 
 onMounted(() => {
-  if (user?.value?.role?.toLocaleLowerCase() === 'user') {
-    links.value = [
-      {
-        label: 'Voting',
-        icon: 'i-heroicons-document',
-        to: '/vote',
-        click: () => isOpen.value = false
-      }
-    ]
+  if (user?.value?.role?.toLocaleLowerCase() === 'admin') {
+    links.value = [{
+      label: 'Dashboard',
+      icon: 'i-heroicons-home',
+      to: '/dashboard',
+      click: () => isOpen.value = false
+    },
+    {
+      label: 'Laporan TPS',
+      icon: 'i-heroicons-document',
+      to: '/report',
+      click: () => isOpen.value = false
+    }, {
+      label: 'Kandidat Calon',
+      icon: 'i-heroicons-user-circle',
+      to: '/candidate',
+      click: () => isOpen.value = false
+    }, {
+      label: 'Daftar Petugas',
+      icon: 'i-heroicons-user-group',
+      to: '/user',
+      click: () => isOpen.value = false
+    }, {
+      label: 'Daftar TPS',
+      icon: 'i-heroicons-command-line',
+      to: '/tps',
+      click: () => isOpen.value = false
+    }, {
+      label: 'Voting',
+      icon: 'i-heroicons-document',
+      to: '/vote',
+      click: () => isOpen.value = false
+    }]
   }
 })
 
