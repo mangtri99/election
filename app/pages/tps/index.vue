@@ -49,16 +49,16 @@ const schema = z.object({
 
     else return value
   }),
-  villageId: z.number({
-    invalid_type_error: 'Wajib diisi',
-    required_error: 'Wajib diisi'
-  }).min(0).transform((value) => {
-    if (Number.isNaN(value)) {
-      return undefined
+  villageId: z.union([z.object({
+    id: z.number().int().positive(),
+    name: z.string().optional()
+  }), z.number().int().positive().optional().refine((value) => {
+    if (value) {
+      return value > 0
     }
-
-    else return value
-  })
+  }, {
+    message: 'Kelurahan/Desa wajib diisi'
+  })])
 })
 
 type Schema = z.output<typeof schema>
@@ -96,9 +96,15 @@ const columns = [
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
     loading.value = true
+
+    const formatFormRequest = {
+      ...event.data,
+      villageId: typeof event.data.villageId === 'object' ? event.data.villageId?.id : event.data.villageId
+    }
+
     const response = await $fetch('/api/tps/bulk', {
       method: 'POST',
-      body: event.data,
+      body: formatFormRequest,
       headers: {
         'Content-Type': 'application/json'
       }
@@ -110,8 +116,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         title: 'Berhasil menambahkan data',
         icon: 'i-heroicons-check-circle'
       })
-
-      navigateTo('/')
+      isOpen.value = false
     }
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
