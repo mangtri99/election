@@ -3,7 +3,7 @@ import { z } from 'zod'
 import type { FormErrorEvent, FormSubmitEvent } from '#ui/types'
 
 definePageMeta({
-  middleware: 'auth'
+  middleware: 'admin'
 })
 
 const { data, status } = await useFetch<APIResponseData<Tps[]>>('/api/tps')

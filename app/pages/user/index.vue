@@ -4,7 +4,7 @@ import type { User } from '~/utils/types'
 import type { FormErrorEvent, FormSubmitEvent } from '#ui/types'
 
 definePageMeta({
-  middleware: 'auth'
+  middleware: 'admin'
 })
 
 const { data, status } = useFetch<APIResponseData<User[]>>('/api/user')

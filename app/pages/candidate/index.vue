@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import type { APIResponseData, Candidate } from '~/utils/types'
 
+definePageMeta({
+  middleware: 'admin'
+})
+
 const { data, status } = useFetch<APIResponseData<Candidate[]>>('/api/candidate')
 
 const columns = [

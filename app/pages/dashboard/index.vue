@@ -13,7 +13,7 @@ interface Summary {
 }
 
 definePageMeta({
-  middleware: 'auth'
+  middleware: 'admin'
 })
 
 const runtimeConfig = useRuntimeConfig()
