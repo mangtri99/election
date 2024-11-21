@@ -7,7 +7,7 @@ definePageMeta({
   middleware: 'admin'
 })
 
-const { data, status } = useFetch<APIResponseData<User[]>>('/api/user')
+const { data, status, refresh } = useFetch<APIResponseData<User[]>>('/api/user')
 const isOpen = ref(false)
 const toast = useToast()
 const loading = ref(false)
@@ -66,12 +66,12 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     loading.value = false
 
     if (response) {
+      refresh()
       toast.add({
         title: 'Berhasil menambahkan data',
         icon: 'i-heroicons-check-circle'
       })
-
-      navigateTo('/')
+      isOpen.value = false
     }
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -83,6 +83,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       icon: 'i-heroicons-x-circle',
       color: 'red'
     })
+    loading.value = false
   }
 }
 

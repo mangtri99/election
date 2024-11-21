@@ -6,7 +6,7 @@ definePageMeta({
   middleware: 'admin'
 })
 
-const { data, status } = await useFetch<APIResponseData<Tps[]>>('/api/tps')
+const { data, status, refresh } = await useFetch<APIResponseData<Tps[]>>('/api/tps')
 const { data: villageOptions, status: statusVillageOptions } = await useAsyncData('village-options', () => $fetch<APIResponseData<Village[]>>(`/api/location/village`, {
   query: {
     districtId: [
@@ -112,6 +112,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     loading.value = false
 
     if (response) {
+      refresh()
       toast.add({
         title: 'Berhasil menambahkan data',
         icon: 'i-heroicons-check-circle'
@@ -128,6 +129,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       icon: 'i-heroicons-x-circle',
       color: 'red'
     })
+    loading.value = false
   }
 }
 
@@ -146,12 +148,13 @@ async function onError(event: FormErrorEvent) {
     <div>
       <div
         v-if="user?.role && user?.role.toLowerCase() === 'admin'"
-        class="mb-4"
+        class="mb-4 flex justify-between"
       >
         <UButton
           label="Tambah TPS"
           @click="isOpen = true"
         />
+        <p>Total TPS {{ data?.data?.length }}</p>
       </div>
 
       <UModal v-model="isOpen">
