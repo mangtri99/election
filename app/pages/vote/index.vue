@@ -44,10 +44,10 @@ const schema = z.object({
   }),
   totalValidVote: ZodNumberDefaultUndefined(),
   totalInvalidVote: ZodNumberDefaultUndefined(),
-  totalDptActive: ZodNumberDefaultUndefined(),
-  totalDptPassive: ZodNumberDefaultUndefined(),
-  totalOtherDpt: ZodNumberDefaultUndefined(),
-  totalDpt: ZodNumberDefaultUndefined(),
+  // totalDptActive: ZodNumberDefaultUndefined(),
+  // totalDptPassive: ZodNumberDefaultUndefined(),
+  totalDpt: z.number().min(0).optional(),
+  totalOtherDpt: z.number().min(0).optional(),
   candidateVotes: z.array(z.object({
     candidateId: z.number().int().positive(),
     totalVote: ZodNumberDefaultUndefined()
@@ -155,18 +155,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       tpsId: typeof event.data.tpsId === 'object' ? event.data.tpsId.id : event.data.tpsId
     }
 
-    const checkVoteIsBalance = (Number(event.data.totalValidVote) + Number(event.data.totalInvalidVote)) === (Number(event.data.totalDptActive) + Number(event.data.totalOtherDpt))
-
-    if (!checkVoteIsBalance) {
-      toast.add({
-        title: 'Total suara tidak balance',
-        description: 'Total suara sah dan tidak sah harus sama dengan total DPT hadir dan diluar DPT',
-        icon: 'i-heroicons-x-circle',
-        color: 'red'
-      })
-      return
-    }
-
     loading.value = true
     const response = await $fetch('/api/votes/tps', {
       method: 'POST',
@@ -215,12 +203,6 @@ watch(() => state.candidateVotes, () => {
   }, 0)
 
   state.totalValidVote = sumTotalVote
-}, {
-  deep: true
-})
-
-watch(() => Number(state.totalDptActive) + Number(state.totalDptPassive), (value) => {
-  state.totalDpt = value
 }, {
   deep: true
 })
@@ -300,7 +282,7 @@ watch(() => Number(state.totalDptActive) + Number(state.totalDptPassive), (value
           </UFormGroup>
 
           <UFormGroup
-            label="Kelurahan"
+            label="Kelurahan/Desa"
             name="villageId"
             required
             hint="Pilih kecamatan terlebih dahulu"
@@ -400,44 +382,18 @@ watch(() => Number(state.totalDptActive) + Number(state.totalDptPassive), (value
           </UFormGroup>
 
           <UFormGroup
-            label="Total DPT Hadir"
-            name="totalDptActive"
-            required
-          >
-            <UInput
-              v-model="state.totalDptActive"
-              type="number"
-            />
-          </UFormGroup>
-
-          <UFormGroup
-            label="Total DPT Tidak Hadir"
-            name="totalDptPassive"
-            required
-          >
-            <UInput
-              v-model="state.totalDptPassive"
-              type="number"
-            />
-          </UFormGroup>
-
-          <UFormGroup
-            label="Total DPT"
+            label="Total DPT (Opsional)"
             name="totalDpt"
-            help="Total DPT akan dihitung otomatis dari total DPT hadir dan tidak hadir"
-            required
           >
             <UInput
               v-model="state.totalDpt"
               type="number"
-              readonly
             />
           </UFormGroup>
 
           <UFormGroup
-            label="Total Pemilih Diluar DPT"
+            label="Total Pemilih Diluar DPT (Opsional)"
             name="totalOtherDpt"
-            required
           >
             <UInput
               v-model="state.totalOtherDpt"
