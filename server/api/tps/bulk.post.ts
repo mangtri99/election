@@ -21,8 +21,8 @@ export default defineEventHandler(async (event) => {
 
     if (checkTpsExist) {
       throw createError({
-        status: 400,
-        message: `TPS Nomor ${i} yang dimasukkan sudah terdaftar!`
+        statusCode: 400,
+        statusMessage: `TPS Nomor ${i} yang dimasukkan sudah terdaftar!`
       })
     }
 
@@ -34,7 +34,21 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  await useDB().insert(tables.tps).values(createTps)
+  const splitData = createTps.reduce((acc, curr, index) => {
+    const groupIndex = Math.floor(index / 10)
+    if (!acc[groupIndex]) {
+      acc[groupIndex] = []
+    }
+    acc[groupIndex].push(curr)
+    return acc
+  }
+  , [])
+
+  splitData.forEach(async (data) => {
+    await useDB().insert(tables.tps).values(data)
+  })
+
+  // await useDB().insert(tables.tps).values(createTps)
 
   return successResponse({
     message: `TPS ${tpsNumberFrom} - ${tpsNumberTo} berhasil dibuat`

@@ -3,6 +3,7 @@ export default defineEventHandler(async (event) => {
 
   let tps = await useDB().query.tps.findMany({
     where: (tps, { eq }) => query.villageId ? eq(tps.villageId, Number(query.villageId)) : undefined,
+    orderBy: (tps, { asc }) => [asc(tps.villageId)],
     with: {
       village: {
         with: {

@@ -6,7 +6,27 @@ definePageMeta({
   middleware: 'admin'
 })
 
-const { data, status, refresh } = await useFetch<APIResponseData<Tps[]>>('/api/tps')
+const runtimeConfig = useRuntimeConfig()
+
+const filter = ref({
+  district: undefined as District | undefined,
+  village: undefined as Village | undefined
+})
+
+const { data: districtOptions } = await useFetch<APIResponseData<District[]>>('/api/location/district', {
+  query: {
+    regencyId: runtimeConfig.public.defaultRegencyId
+  }
+})
+
+const { data, status, refresh } = await useAsyncData('list-tps',
+  () => $fetch<APIResponseData<Tps[]>>(`/api/tps`, {
+    query: {
+      districtId: filter.value.district?.id,
+      villageId: filter.value.village?.id
+    }
+  }))
+
 const { data: villageOptions, status: statusVillageOptions } = await useAsyncData('village-options', () => $fetch<APIResponseData<Village[]>>(`/api/location/village`, {
   query: {
     districtId: [
@@ -21,6 +41,23 @@ const { data: villageOptions, status: statusVillageOptions } = await useAsyncDat
     ]
   }
 }))
+
+function onFilterChange() {
+  refresh()
+}
+
+function resetFilter() {
+  filter.value = {
+    district: undefined,
+    village: undefined
+  }
+  refresh()
+}
+
+const getVillageByDistrict = (districtId?: number) => {
+  if (!districtId) return villageOptions?.value?.data || []
+  return villageOptions?.value?.data?.filter(village => village.districtId === districtId) || []
+}
 
 const isOpen = ref(false)
 const toast = useToast()
@@ -118,6 +155,12 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         icon: 'i-heroicons-check-circle'
       })
       isOpen.value = false
+
+      state.value = {
+        tpsNumberFrom: 1,
+        tpsNumberTo: 10,
+        villageId: undefined
+      }
     }
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -154,7 +197,60 @@ async function onError(event: FormErrorEvent) {
           label="Tambah TPS"
           @click="isOpen = true"
         />
-        <p>Total TPS {{ data?.data?.length }}</p>
+        <p class="font-bold text-xl">
+          Total TPS: {{ data?.data?.length }}
+        </p>
+      </div>
+
+      <div class="flex md:flex-row flex-col md:items-end md:space-x-4 space-y-4 md:space-y-0 mb-4">
+        <UFormGroup
+          label="Filter Kecamatan"
+          name="districtId"
+        >
+          <USelectMenu
+            v-model="filter.district"
+            by="id"
+            option-attribute="name"
+            searchable
+            searchable-placeholder="Cari kecamatan..."
+            class="w-48"
+            placeholder="Pilih Kecamatan"
+            :options="districtOptions?.data || []"
+          />
+        </UFormGroup>
+
+        <UFormGroup
+          label="Filter Kelurahan/Desa"
+          name="villageId"
+        >
+          <USelectMenu
+            v-model="filter.village"
+            by="id"
+            option-attribute="name"
+            searchable
+            searchable-placeholder="Cari Keluraha..."
+            class="w-48"
+            placeholder="Pilih Kelurahan"
+            :options="getVillageByDistrict(filter.district?.id) || []"
+          />
+        </UFormGroup>
+
+        <UButton
+          class="w-auto inline-block"
+          variant="solid"
+          color="yellow"
+          @click="onFilterChange"
+        >
+          Cari
+        </UButton>
+        <UButton
+          class="w-auto inline-block"
+          variant="solid"
+          color="red"
+          @click="resetFilter"
+        >
+          Hapus Filter
+        </UButton>
       </div>
 
       <UModal v-model="isOpen">
