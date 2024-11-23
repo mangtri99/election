@@ -47,7 +47,7 @@ const schema = z.object({
   // totalDptActive: ZodNumberDefaultUndefined(),
   // totalDptPassive: ZodNumberDefaultUndefined(),
   totalDpt: z.number().min(0).optional(),
-  totalOtherDpt: z.number().min(0).optional(),
+  // totalOtherDpt: z.number().min(0).optional(),
   candidateVotes: z.array(z.object({
     candidateId: z.number().int().positive(),
     totalVote: ZodNumberDefaultUndefined()
@@ -73,7 +73,7 @@ const defaultState = {
   totalInvalidVote: undefined,
   totalDptActive: undefined,
   totalDptPassive: undefined,
-  totalOtherDpt: undefined,
+  // totalOtherDpt: undefined,
   totalDpt: undefined,
   candidateVotes: [
     {
@@ -382,7 +382,7 @@ watch(() => state.candidateVotes, () => {
           </UFormGroup>
 
           <UFormGroup
-            label="Total DPT (Opsional)"
+            label="Jumlah Surat Suara yang digunakan oleh Pemilih"
             name="totalDpt"
           >
             <UInput
@@ -391,7 +391,7 @@ watch(() => state.candidateVotes, () => {
             />
           </UFormGroup>
 
-          <UFormGroup
+          <!-- <UFormGroup
             label="Total Pemilih Diluar DPT (Opsional)"
             name="totalOtherDpt"
           >
@@ -399,7 +399,7 @@ watch(() => state.candidateVotes, () => {
               v-model="state.totalOtherDpt"
               type="number"
             />
-          </UFormGroup>
+          </UFormGroup> -->
 
           <UFormGroup
             label="Nama Pelapor"

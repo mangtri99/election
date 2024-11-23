@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
     totalInvalidVote: z.number().min(0),
     // totalDptActive: z.number().min(0).optional(),
     // totalDptPassive: z.number().min(0).optional(),
-    totalOtherDpt: z.number().min(0).optional(),
+    // totalOtherDpt: z.number().min(0).optional(),
     totalDpt: z.number().min(0).optional(),
     candidateVotes: z.any().array().default([]),
     reportName: z.string().min(0).optional(),

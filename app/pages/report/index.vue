@@ -104,7 +104,7 @@ const columns = [
   },
   {
     key: 'totalDpt',
-    label: 'Total DPT',
+    label: 'Jumlah Surat Suara yang digunakan oleh pemilih',
     sortable: true
   },
   {

@@ -34,21 +34,22 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const splitData = createTps.reduce((acc, curr, index) => {
-    const groupIndex = Math.floor(index / 10)
-    if (!acc[groupIndex]) {
-      acc[groupIndex] = []
-    }
-    acc[groupIndex].push(curr)
-    return acc
-  }
-  , [])
+  // const splitData = createTps.reduce((acc, curr, index) => {
+  //   const groupIndex = Math.floor(index / 10)
+  //   if (!acc[groupIndex]) {
+  //     acc[groupIndex] = []
+  //   }
+  //   acc[groupIndex].push(curr)
+  //   return acc
+  // }
+  // , [])
 
-  splitData.forEach(async (data) => {
-    await useDB().insert(tables.tps).values(data)
-  })
+  // splitData.forEach(async (data) => {
+  //   console.log(data)
+  //   // await useDB().insert(tables.tps).values(data)
+  // })
 
-  // await useDB().insert(tables.tps).values(createTps)
+  await useDB().insert(tables.tps).values(createTps)
 
   return successResponse({
     message: `TPS ${tpsNumberFrom} - ${tpsNumberTo} berhasil dibuat`
