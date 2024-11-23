@@ -27,7 +27,7 @@ if (route.query.login === 'true') {
     <UCard class="max-w-2xl">
       <template #header>
         <h3 class="text-lg font-semibold leading-6">
-          Aplikasi Hitung Pilkada 2025
+          Aplikasi Hitung Pilkada 2024
         </h3>
       </template>
       <div>
@@ -55,7 +55,7 @@ if (route.query.login === 'true') {
       </div>
       <hr class="dark:border-gray-700">
       <p class="text-sm text-gray-700 dark:text-gray-300 italic">
-        Aplikasi ini dibuat untuk memudahkan proses penghitungan suara Pilkada Karangasem 2025
+        Aplikasi ini dibuat untuk memudahkan proses penghitungan suara Pilkada Karangasem 2024
       </p>
     </UCard>
   </div>

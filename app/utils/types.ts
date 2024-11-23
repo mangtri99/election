@@ -65,6 +65,8 @@ export interface TPSVote {
   totalOtherDpt: number
   totalDpt: number
   userId: number
+  reportName: string
+  reportPhoneNumber: string
   createdAt: Date
   updatedAt: Date
   candidateVotes: CandidateVote[]

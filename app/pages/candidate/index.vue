@@ -35,7 +35,7 @@ const columns = [
 <template>
   <div>
     <h1 class="text-xl mb-4 text-center">
-      List Calon Bupati dan Calon Wakil Bupati Karangasem 2025
+      List Calon Bupati dan Calon Wakil Bupati Karangasem 2024
     </h1>
     <UCard>
       <UTable

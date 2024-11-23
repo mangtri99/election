@@ -25,49 +25,61 @@ export default defineEventHandler(async (event) => {
     reportPhoneNumber: z.string().min(0).optional()
   })
 
-  let getTpsId = payload.tpsId
+  let getTpsId = null
   let getTpsNumber = payload.tpsNumber
 
   const filters: SQL[] = []
-  // filter by, provinceId, regencyId, districtId, villageId, tpsId,
-  if (payload.tpsId) {
-    filters.push(eq(tables.tpsVotes.tpsId, Number(payload.tpsId)))
-    const checkTpsVote = await useDB().select().from(tables.tpsVotes).where(and(...filters)).get()
 
-    if (checkTpsVote) {
-      return createError({
-        statusCode: 400,
-        statusMessage: 'Data di TPS ini sudah ada'
-      })
-    }
+  // if (payload.tpsId) {
+  //   filters.push(eq(tables.tpsVotes.tpsId, Number(payload.tpsId)))
+  //   const checkTpsVote = await useDB().select().from(tables.tpsVotes).where(and(...filters)).get()
+
+  //   if (checkTpsVote) {
+  //     return createError({
+  //       statusCode: 400,
+  //       statusMessage: 'Data di TPS ini sudah ada'
+  //     })
+  //   }
+  // }
+  // else {
+  filters.push(eq(tables.tpsVotes.tpsNumber, payload.tpsNumber))
+  filters.push(eq(tables.tpsVotes.villageId, payload.villageId))
+
+  const checkTpsVote = await useDB().select().from(tables.tpsVotes).where(and(...filters)).get()
+
+  if (checkTpsVote) {
+    return createError({
+      statusCode: 400,
+      statusMessage: 'Data di TPS ini sudah ada'
+    })
+  }
+
+  const checkTpsExist = await useDB().select().from(tables.tps).where(
+    and(
+      eq(tables.tps.villageId, Number(payload.villageId)),
+      eq(tables.tps.name, payload.tpsNumber)
+    )
+  ).get()
+
+  if (checkTpsExist) {
+    // use existing tps
+    getTpsId = checkTpsExist.id
+    getTpsNumber = checkTpsExist.name
   }
   else {
-    const checkTpsExist = await useDB().select().from(tables.tps).where(
-      and(
-        eq(tables.tps.villageId, Number(payload.villageId)),
-        eq(tables.tps.name, payload.tpsNumber)
-      )
-    ).get()
+    // else, create new tps
+    const createTps = await useDB().insert(tables.tps).values({
+      name: payload.tpsNumber,
+      villageId: Number(payload.villageId),
+      totalDpt: payload.totalDpt ?? 0,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }).returning().get()
 
-    if (checkTpsExist) {
-      // use existing tps
-      getTpsId = checkTpsExist.id
-      getTpsNumber = checkTpsExist.name
-    }
-    else {
-      // else, create new tps
-      const createTps = await useDB().insert(tables.tps).values({
-        name: payload.tpsNumber,
-        villageId: Number(payload.villageId),
-        totalDpt: payload.totalDpt ?? 0,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }).returning().get()
-
-      getTpsId = createTps.id
-      getTpsNumber = createTps.name
-    }
+    getTpsId = createTps.id
+    getTpsNumber = createTps.name
   }
+  // }
 
   const createTpsVote = await useDB().insert(tables.tpsVotes).values({
     userId: Number(user.id),

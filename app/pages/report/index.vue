@@ -12,8 +12,12 @@ const filter = ref({
 
 const loading = ref(false)
 const toast = useToast()
+const isOpenDelete = ref(false)
+const isOpenEdit = ref(false)
+const selectedData = ref({} as TPSVote)
 
 const { data: districtOptions } = await useFetch<APIResponseData<District[]>>('/api/location/district', {
+  key: 'district-options',
   query: {
     regencyId: runtimeConfig.public.defaultRegencyId
   }
@@ -34,7 +38,7 @@ const { data: villageOptions } = await useAsyncData('village-options', () => $fe
   }
 }))
 const { data, status, refresh } = await useAsyncData('vote-tps-result',
-  () => $fetch<APIResponseData<Village[]>>(`/api/votes/tps`, {
+  () => $fetch<APIResponseData<TPSVote[]>>(`/api/votes/tps`, {
     query: {
       provinceId: runtimeConfig.public.defaultProvinceId,
       regencyId: runtimeConfig.public.defaultRegencyId,
@@ -52,6 +56,11 @@ function resetFilter() {
     district: undefined,
     village: undefined
   }
+  refresh()
+}
+
+function successUpdate() {
+  isOpenEdit.value = false
   refresh()
 }
 
@@ -103,13 +112,8 @@ const columns = [
     sortable: true
   },
   {
-    key: 'totalDpt',
-    label: 'Jumlah Surat Suara yang digunakan oleh pemilih',
-    sortable: true
-  },
-  {
-    key: 'totalOtherDpt',
-    label: 'Total Pemilih Diluar DPT',
+    key: 'totalAllVote',
+    label: 'Total Suara Sah + Tidak Sah',
     sortable: true
   },
   {
@@ -120,6 +124,11 @@ const columns = [
   {
     key: 'reportPhoneNumber',
     label: 'Nomor HP Pelapor',
+    sortable: false
+  },
+  {
+    key: 'action',
+    label: 'Action',
     sortable: false
   }
 
@@ -182,12 +191,51 @@ async function downloadCSV(isAll = true) {
     })
   }
 }
+
+function onEditData(data: TPSVote) {
+  selectedData.value = data
+  isOpenEdit.value = true
+}
+
+function onDeleteData(data: TPSVote) {
+  selectedData.value = data
+  isOpenDelete.value = true
+}
+
+async function onConfirmDelete() {
+  // delete data
+  isOpenDelete.value = false
+  try {
+    loading.value = true
+    await $fetch(`/api/votes/tps/${selectedData.value.id}`, {
+      method: 'delete'
+    })
+    loading.value = false
+    toast.add({
+      title: 'Berhasil menghapus data',
+      icon: 'i-heroicons-check-circle',
+      color: 'green'
+    })
+    refresh()
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  catch (error: any) {
+    console.log(error)
+    loading.value = false
+    toast.add({
+      title: 'Gagal menghapus data',
+      description: error?.data?.statusMessage || 'Silakan coba lagi',
+      icon: 'i-heroicons-x-circle',
+      color: 'red'
+    })
+  }
+}
 </script>
 
 <template>
   <div>
     <h1 class="text-xl mb-4 text-center">
-      Laporan TPS Pilkada Karangasem 2025
+      Laporan TPS Pilkada Karangasem 2024
     </h1>
     <UCard>
       <div class="flex flex-col md:flex-row md:justify-between md:items-end space-y-4 md:space-y-0">
@@ -269,17 +317,78 @@ async function downloadCSV(isAll = true) {
         :rows="data?.data"
         :columns="columns"
       >
-        <!-- <template #candidateVotes-data="{ row }">
+        <template #totalAllVote-data="{ row }">
           <div>
-            <div
-              v-for="candidate in row.candidateVotes"
-              :key="candidate.id"
-            >
-              <p>{{ candidate.candidate?.orderNumber }}. {{ candidate.candidate?.name }} : {{ candidate.totalVote }} </p>
-            </div>
+            {{ Number(row.totalValidVote) + Number(row.totalInvalidVote) }}
           </div>
-        </template> -->
+        </template>
+
+        <template #action-data="{ row }">
+          <div class="flex items-center space-x-4">
+            <UButton
+              size="xs"
+              variant="solid"
+              color="blue"
+              label="Edit"
+              icon="i-heroicons-pencil"
+              @click="() => onEditData(row)"
+            />
+
+            <UButton
+              size="xs"
+              variant="solid"
+              color="red"
+              label="Hapus"
+              icon="i-heroicons-trash"
+              @click="() => onDeleteData(row)"
+            />
+          </div>
+        </template>
       </UTable>
     </UCard>
+
+    <UModal v-model="isOpenDelete">
+      <div class="p-4">
+        <p>Apakah anda yakin ingin menghapus data dari TPS {{ selectedData.tpsNumber }}</p>
+        <div class="mt-4 flex items-center space-x-4">
+          <UButton
+            color="red"
+            variant="solid"
+            label="Hapus"
+            @click="onConfirmDelete()"
+          />
+
+          <UButton
+            color="white"
+            variant="solid"
+            label="Batal"
+            @click="() => isOpenDelete = false"
+          />
+        </div>
+      </div>
+    </UModal>
+
+    <USlideover v-model="isOpenEdit">
+      <div class="p-4 flex-1 overflow-auto">
+        <UButton
+          color="gray"
+          variant="ghost"
+          size="sm"
+          icon="i-heroicons-x-mark-20-solid"
+          class="flex sm:hidden absolute end-5 top-5 z-10"
+          square
+          padded
+          @click="isOpenEdit = false"
+        />
+        <div class="h-full overflow-y-auto">
+          <FormVoting
+            :id="selectedData.id"
+            :is-edit="true"
+            :selected-data="selectedData"
+            @success-update="successUpdate"
+          />
+        </div>
+      </div>
+    </USlideover>
   </div>
 </template>

@@ -6,18 +6,18 @@ export default defineEventHandler(async (event) => {
   })
 
   try {
-    // delete tps by id
-    await useDB().delete(tables.tps).where(eq(tables.tps.id, id))
+    await useDB().delete(tables.candidateVotes).where(eq(tables.candidateVotes.voteId, id))
+    await useDB().delete(tables.tpsVotes).where(eq(tables.tpsVotes.id, id))
 
     return successResponse({
-      message: `TPS berhasil dihapus`
+      message: `Laporan Suara TPS berhasil dihapus`
     })
   }
   catch (error) {
     console.error(error)
     return createError({
       statusCode: 500,
-      statusMessage: 'Terjadi kesalahan saat menghapus TPS'
+      statusMessage: 'Terjadi kesalahan saat menghapus Laporan Suara TPS'
     })
   }
 })

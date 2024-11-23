@@ -1,4 +1,4 @@
-import type { SQL } from 'drizzle-orm'
+import { ne, type SQL } from 'drizzle-orm'
 import { useValidatedBody, useValidatedParams, zh } from 'h3-zod'
 import { z } from 'zod'
 
@@ -12,62 +12,74 @@ export default defineEventHandler(async (event) => {
     regencyId: z.number().int().positive(),
     districtId: z.number().int().positive(),
     villageId: z.number().int().positive(),
-    tpsId: z.number().int().positive().optional(),
+    // tpsId: z.number().int().positive().optional(),
     tpsNumber: z.string(),
-    totalValidVote: z.number().int().positive(),
-    totalInvalidVote: z.number().int().positive(),
-    totalDptActive: z.number().positive().optional(),
-    totalDptPassive: z.number().positive().optional(),
-    totalOtherDpt: z.number().positive().optional(),
-    totalDpt: z.number().positive().optional(),
+    totalValidVote: z.number().min(0),
+    totalInvalidVote: z.number().min(0),
+    // totalDptActive: z.number().min(0).optional(),
+    // totalDptPassive: z.number().min(0).optional(),
+    // totalOtherDpt: z.number().min(0).optional(),
+    totalDpt: z.number().min(0).optional(),
     candidateVotes: z.any().array().default([]),
-    reportName: z.string().optional(),
-    reportPhoneNumber: z.string().optional()
+    reportName: z.string().min(0).optional(),
+    reportPhoneNumber: z.string().min(0).optional()
   })
 
-  let getTpsId = payload.tpsId
+  let getTpsId = null
   let getTpsNumber = payload.tpsNumber
 
   const filters: SQL[] = []
   // filter by, provinceId, regencyId, districtId, villageId, tpsId,
-  if (payload.tpsId) {
-    filters.push(eq(tables.tpsVotes, Number(payload.tpsId)))
-    const checkTpsVote = await useDB().select().from(tables.tpsVotes).where(and(...filters)).get()
+  // if (payload.tpsId) {
+  //   filters.push(eq(tables.tpsVotes.tpsId, Number(payload.tpsId)))
+  //   filters.push(ne(tables.tpsVotes.id, id))
+  //   const checkTpsVote = await useDB().select().from(tables.tpsVotes).where(and(...filters)).get()
 
-    if (checkTpsVote) {
-      return createError({
-        statusCode: 400,
-        statusMessage: 'Data di TPS ini sudah ada'
-      })
-    }
+  //   if (checkTpsVote) {
+  //     return createError({
+  //       statusCode: 400,
+  //       statusMessage: 'Data di TPS ini sudah ada'
+  //     })
+  //   }
+  // }
+  // else {
+  filters.push(eq(tables.tpsVotes.tpsNumber, payload.tpsNumber))
+  filters.push(ne(tables.tpsVotes.id, id))
+  const checkTpsVote = await useDB().select().from(tables.tpsVotes).where(and(...filters)).get()
+
+  if (checkTpsVote) {
+    return createError({
+      statusCode: 400,
+      statusMessage: 'Data di TPS ini sudah ada'
+    })
+  }
+
+  const checkTpsExist = await useDB().select().from(tables.tps).where(
+    and(
+      eq(tables.tps.villageId, Number(payload.villageId)),
+      eq(tables.tps.name, payload.tpsNumber)
+    )
+  ).get()
+
+  if (checkTpsExist) {
+    // use existing tps
+    getTpsId = checkTpsExist.id
+    getTpsNumber = checkTpsExist.name
   }
   else {
-    const checkTpsExist = await useDB().select().from(tables.tps).where(
-      and(
-        eq(tables.tps.villageId, Number(payload.villageId)),
-        eq(tables.tps.name, payload.tpsNumber)
-      )
-    ).get()
+    // else, create new tps
+    const createTps = await useDB().insert(tables.tps).values({
+      name: payload.tpsNumber,
+      villageId: Number(payload.villageId),
+      totalDpt: payload.totalDpt,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }).returning().get()
 
-    if (checkTpsExist) {
-      // use existing tps
-      getTpsId = checkTpsExist.id
-      getTpsNumber = checkTpsExist.name
-    }
-    else {
-      // else, create new tps
-      const createTps = await useDB().insert(tables.tps).values({
-        name: payload.tpsNumber,
-        villageId: Number(payload.villageId),
-        totalDpt: payload.totalDpt,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }).returning().get()
-
-      getTpsId = createTps.id
-      getTpsNumber = createTps.name
-    }
+    getTpsId = createTps.id
+    getTpsNumber = createTps.name
   }
+  // }
 
   const updateTpsVote = await useDB().update(tables.tpsVotes).set({
     userId: event.context.user.id,

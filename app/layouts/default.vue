@@ -33,7 +33,7 @@
         @click="isOpen = true"
       />
       <NuxtLink to="/">
-        Aplikasi Pilkada 2025
+        Aplikasi Pilkada 2024
       </NuxtLink>
     </div>
 
@@ -91,7 +91,7 @@
     </div>
 
     <footer class="text-center mt-2">
-      KARISMA KARANGASEM 2025
+      KARISMA KARANGASEM 2024
     </footer>
   </UContainer>
 </template>

@@ -97,7 +97,7 @@ async function onError(event: FormErrorEvent) {
 <template>
   <div>
     <h1 class="text-xl mb-4 text-center">
-      Daftar Petugas Pilkada Karangasem 2025
+      Daftar Petugas Pilkada Karangasem 2024
     </h1>
     <div>
       <div

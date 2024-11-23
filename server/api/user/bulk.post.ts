@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
       getDistricts.forEach(async (district) => {
         createDataUser.push({
           name: `Petugas ${district.name}`,
-          username: createUsername(`${district.name}2025`),
+          username: createUsername(`${district.name}2024`),
           password: hashedPassword,
           roleId: DEFAULT_ROLE_ID || null,
           updatedAt: new Date(),
@@ -55,7 +55,7 @@ export default defineEventHandler(async (event) => {
       getVillagesByRegency.forEach(async (village) => {
         createDataUser.push({
           name: `Petugas ${village.name}`,
-          username: createUsername(`${village.name}2025`),
+          username: createUsername(`${village.name}2024`),
           password: hashedPassword,
           roleId: DEFAULT_ROLE_ID || null,
           updatedAt: new Date(),

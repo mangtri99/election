@@ -14,9 +14,9 @@ useHead({
 
 useSeoMeta({
   viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
-  title: 'Aplikasi Pemilu Karisma Karangasem 2025',
+  title: 'Aplikasi Pemilu Karisma Karangasem 2024',
   description:
-    'Karisma Karangasem 2025',
+    'Karisma Karangasem 2024',
   ogImage: '/social-image.png',
   twitterImage: '/social-image.png',
   twitterCard: 'summary_large_image'
