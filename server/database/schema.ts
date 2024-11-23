@@ -175,6 +175,10 @@ export const tpsVotesRelations = relations(tpsVotes, ({ one, many }) => ({
     fields: [tpsVotes.tpsId],
     references: [tps.id]
   }),
+  user: one(users, {
+    fields: [tpsVotes.userId],
+    references: [users.id]
+  }),
   candidateVotes: many(candidateVotes),
   tpsVoteImages: many(tpsVoteImages)
 }))

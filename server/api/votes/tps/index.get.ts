@@ -43,7 +43,8 @@ export default defineEventHandler(async (event) => {
       regency: true,
       province: true,
       village: true,
-      tps: true
+      tps: true,
+      user: true
     }
   })
 

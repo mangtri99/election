@@ -117,6 +117,11 @@ const columns = [
     sortable: true
   },
   {
+    key: 'user.name',
+    label: 'Akun Petugas',
+    sortable: false
+  },
+  {
     key: 'reportName',
     label: 'Nama Pelapor',
     sortable: false

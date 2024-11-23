@@ -25,7 +25,8 @@ export default defineEventHandler(async (event) => {
       regency: true,
       province: true,
       village: true,
-      tps: true
+      tps: true,
+      user: true
     }
   })
 
@@ -56,6 +57,7 @@ export default defineEventHandler(async (event) => {
     // 'Total DPT yang Hadir',
     // 'Total DPT yang Tidak Hadir',
     'Total Suara Sah + Tidak Sah',
+    'Akun Petugas',
     'Nama Pelapor',
     'Nomor HP Pelapor'
   ]
@@ -74,6 +76,7 @@ export default defineEventHandler(async (event) => {
       // totalDptActive: tpsVote.totalDptActive ?? 0,
       // totalDptPassive: tpsVote.totalDptPassive ?? 0,
       totalAllVote: tpsVote.totalValidVote + tpsVote.totalInvalidVote,
+      user: tpsVote.user?.name,
       reportName: tpsVote.reportName,
       reportPhoneNumber: tpsVote.reportPhoneNumber
     }
