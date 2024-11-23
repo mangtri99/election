@@ -46,8 +46,8 @@ export default defineEventHandler(async (event) => {
     'Provinsi',
     'Kabupaten',
     'Kecamatan',
-    'Desa',
-    'TPS',
+    'Kelurahan/Desa',
+    'Nomor TPS',
     'Total Suara Paslon 1',
     'Total Suara Paslon 2',
     'Total Suara Paslon 3',
@@ -55,7 +55,7 @@ export default defineEventHandler(async (event) => {
     'Total Suara Tidak Sah',
     // 'Total DPT yang Hadir',
     // 'Total DPT yang Tidak Hadir',
-    'Total Pemilih diluar DPT',
+    'Total Suara Sah + Tidak Sah',
     'Nama Pelapor',
     'Nomor HP Pelapor'
   ]
@@ -73,7 +73,7 @@ export default defineEventHandler(async (event) => {
       totalInvalidVote: tpsVote.totalInvalidVote ?? 0,
       // totalDptActive: tpsVote.totalDptActive ?? 0,
       // totalDptPassive: tpsVote.totalDptPassive ?? 0,
-      totalOtherDpt: tpsVote.totalOtherDpt ?? 0,
+      totalAllVote: tpsVote.totalValidVote + tpsVote.totalInvalidVote,
       reportName: tpsVote.reportName,
       reportPhoneNumber: tpsVote.reportPhoneNumber
     }

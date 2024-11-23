@@ -108,6 +108,12 @@ const items = [[{
 
 const links = ref([
   {
+    label: 'Laporan TPS',
+    icon: 'i-heroicons-document',
+    to: '/report',
+    click: () => isOpen.value = false
+  },
+  {
     label: 'Voting',
     icon: 'i-heroicons-document',
     to: '/vote',

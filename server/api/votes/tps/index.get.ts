@@ -11,6 +11,9 @@ export default defineEventHandler(async (event) => {
   if (query.villageId) filters.push(eq(tables.tpsVotes.villageId, Number(query.villageId)))
   if (query.tpsId) filters.push(eq(tables.tpsVotes.tpsId, Number(query.tpsId)))
 
+  // user can only see their own votes
+  if (event.context?.user?.role === 'user') filters.push(eq(tables.tpsVotes.userId, Number(event.context.user.id)))
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function transformDataCandidateVotes(data: any = []) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

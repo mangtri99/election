@@ -2,7 +2,7 @@
 const runtimeConfig = useRuntimeConfig()
 
 definePageMeta({
-  middleware: 'admin'
+  middleware: 'auth'
 })
 
 const filter = ref({
