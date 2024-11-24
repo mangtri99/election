@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
   })
 
   let getTpsId = null
-  let getTpsNumber = payload.tpsNumber
+  let getTpsNumber = payload.tpsNumber ? payload.tpsNumber.replace(/^0+/, '') : null
 
   const filters: SQL[] = []
   // filter by, provinceId, regencyId, districtId, villageId, tpsId,

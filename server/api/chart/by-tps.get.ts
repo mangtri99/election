@@ -3,7 +3,9 @@ export default defineEventHandler(async (event) => {
     const query = getQuery(event)
 
     const tps = await useDB().query.tps.findMany({
-      where: (tp, { eq }) => eq(tp.villageId, Number(query.villageId))
+      where: (tp, { eq }) => eq(tp.villageId, Number(query.villageId)),
+      // cast name as number
+      orderBy: tps => sql`CAST(${tps.name} AS SIGNED) ASC`
     })
 
     const candidates = await useDB().query.candidates.findMany()
@@ -31,7 +33,7 @@ export default defineEventHandler(async (event) => {
     }
     )
 
-    const createCategories = tps.map(tp => `TPS No.${tp.name}`)
+    const createCategories = tps.map(tp => `No.${tp.name}`)
 
     return successResponse({
       categories: createCategories,

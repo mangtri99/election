@@ -176,9 +176,21 @@ watch(() => filterByTps.value.district, () => {
                       },
                       chart: {
                         id: 'total-jumlah'
-                      }
+                      },
+                      colors: [function({ dataPointIndex }) {
+                        if (dataPointIndex === 0) {
+                          return '#008FFB'
+                        }
+                        else if (dataPointIndex === 1) {
+                          return '#00E396'
+                        }
+                        else {
+                          return '#FEB019'
+                        }
+                      }]
                     }"
                     :series="generateSeries(data?.data || { series: [], categories: [] })"
+
                     height="350"
                   />
                   <div

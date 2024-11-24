@@ -26,7 +26,8 @@ export default defineEventHandler(async (event) => {
   })
 
   let getTpsId = null
-  let getTpsNumber = payload.tpsNumber
+  // remove 0 if on first digit
+  let getTpsNumber = payload.tpsNumber ? payload.tpsNumber.replace(/^0+/, '') : null
 
   const filters: SQL[] = []
 

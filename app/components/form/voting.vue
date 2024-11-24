@@ -10,7 +10,7 @@
     >
       <div
         class="grid grid-cols-1 space-y-4"
-        :class="isEdit ? 'md:grid-cols-1' : 'md:grid-cols-3 md:space-x-0 md:space-y-0'"
+        :class="isEdit ? 'md:grid-cols-1' : 'md:grid-cols-3 md:space-x-4 md:space-y-0'"
       >
         <UCard
           v-for="(candidate, index) in state.candidateVotes"
