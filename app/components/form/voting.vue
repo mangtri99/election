@@ -417,12 +417,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
       if (isEdit) {
         state.value = defaultState
+        emit('successUpdate')
       }
       else {
-        navigateTo('/')
+        navigateTo('/report')
       }
-
-      emit('successUpdate')
     }
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

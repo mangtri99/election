@@ -23,7 +23,20 @@ const { data: districtOptions } = await useFetch<APIResponseData<District[]>>('/
   }
 })
 
-const { data: villageOptions } = await useAsyncData('village-options', () => $fetch<APIResponseData<Village[]>>(`/api/location/village`))
+const { data: villageOptions } = await useAsyncData('village-options', () => $fetch<APIResponseData<Village[]>>(`/api/location/village`, {
+  query: {
+    districtId: [
+      510701,
+      510702,
+      510703,
+      510704,
+      510705,
+      510706,
+      510707,
+      510708
+    ]
+  }
+}))
 const { data: summaryVote } = await useAsyncData('chart-summary', () => $fetch<APIResponseData<Summary>>(`/api/chart/summary`))
 
 // const { data: tpsOptions } = await useAsyncData('tps-options', () => $fetch<APIResponseData<Tps[]>>(`/api/tps`))
