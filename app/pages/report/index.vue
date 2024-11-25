@@ -16,14 +16,14 @@ const isOpenDelete = ref(false)
 const isOpenEdit = ref(false)
 const selectedData = ref({} as TPSVote)
 
-const { data: districtOptions } = await useFetch<APIResponseData<District[]>>('/api/location/district', {
+const { data: districtOptions } = useFetch<APIResponseData<District[]>>('/api/location/district', {
   key: 'district-options',
   query: {
     regencyId: runtimeConfig.public.defaultRegencyId
   }
 })
 
-const { data: villageOptions } = await useAsyncData('village-options', () => $fetch<APIResponseData<Village[]>>(`/api/location/village`, {
+const { data: villageOptions } = useAsyncData('village-options', () => $fetch<APIResponseData<Village[]>>(`/api/location/village`, {
   query: {
     districtId: [
       510701,
@@ -84,7 +84,13 @@ const columns = [
   {
     key: 'tpsNumber',
     label: 'Nomor TPS',
-    sortable: true
+    sortable: true,
+    sort: (a: string, b: string, direction: 'asc' | 'desc') => {
+      if (direction === 'asc') {
+        return Number(a) - Number(b)
+      }
+      return Number(b) - Number(a)
+    }
   },
   {
     key: 'candidateTotalVote1',
@@ -320,6 +326,29 @@ async function onConfirmDelete() {
           </UButton>
         </div>
       </div>
+
+      <div class="my-4 space-y-2">
+        <p class="">
+          Total Suara Paslon 1: {{ data?.data?.reduce((acc, curr) => acc + Number(curr.candidateTotalVote1), 0).toLocaleString('id-ID') }}
+        </p>
+
+        <p class="">
+          Total Suara Paslon 2: {{ data?.data?.reduce((acc, curr) => acc + Number(curr.candidateTotalVote2), 0).toLocaleString('id-ID') }}
+        </p>
+
+        <!-- Format to, example: 23.123 -->
+        <p class="">
+          Total Suara Paslon 3: {{ data?.data?.reduce((acc, curr) => acc + Number(curr.candidateTotalVote3), 0).toLocaleString('id-ID') }}
+        </p>
+
+        <p class="text-lg font-bold">
+          Total Suara Sah: {{ data?.data?.reduce((acc, curr) => acc + Number(curr.totalValidVote), 0).toLocaleString('id-ID') }}
+        </p>
+        <p class="text-lg font-bold">
+          Total TPS: {{ data?.data?.length }}
+        </p>
+      </div>
+
       <UTable
         :loading="status === 'pending'"
         :rows="data?.data"

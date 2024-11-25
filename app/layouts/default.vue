@@ -90,7 +90,7 @@
       <slot />
     </div>
 
-    <footer class="text-center mt-2">
+    <footer class="text-center my-4">
       KARISMA KARANGASEM 2024
     </footer>
   </UContainer>

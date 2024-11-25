@@ -13,6 +13,21 @@ export interface Candidate {
   updatedAt: Date
 }
 
+export interface Province {
+  id: number
+  name: string
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface Regency {
+  id: number
+  name: string
+  provinceId: number
+  createdAt: Date
+  updatedAt: Date
+}
+
 export interface District {
   id: number
   name: string
@@ -52,11 +67,11 @@ export interface CandidateVote {
 
 export interface TPSVote {
   id: number
-  provinceId: number
-  regencyId: number
-  districtId: number
-  villageId: number
-  tpsId: number
+  provinceID: number
+  regencyID: number
+  districtID: number
+  villageID: number
+  tpsID: number
   tpsNumber: string
   totalValidVote: number
   totalInvalidVote: number
@@ -64,17 +79,24 @@ export interface TPSVote {
   totalDptPassive: number
   totalOtherDpt: number
   totalDpt: number
-  userId: number
+  userID: number
   reportName: string
   reportPhoneNumber: string
   createdAt: Date
   updatedAt: Date
   candidateVotes: CandidateVote[]
   district: District
-  regency: District
-  province: District
-  village: District
+  regency: Regency
+  province: Province
+  village: Village
   tps: Tps
+  user: User
+  candidateName1: string
+  candidateTotalVote1: number
+  candidateName2: string
+  candidateTotalVote2: number
+  candidateName3: string
+  candidateTotalVote3: number
 }
 
 export interface User {
