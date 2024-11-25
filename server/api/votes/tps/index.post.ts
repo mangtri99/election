@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
 
   let getTpsId = null
   // remove 0 if on first digit
-  let getTpsNumber = payload.tpsNumber ? payload.tpsNumber.replace(/^0+/, '') : null
+  let getTpsNumber = payload.tpsNumber ? payload.tpsNumber.replace(/^0+/, '') : ''
 
   const filters: SQL[] = []
 
@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
   //   }
   // }
   // else {
-  filters.push(eq(tables.tpsVotes.tpsNumber, payload.tpsNumber))
+  filters.push(eq(tables.tpsVotes.tpsNumber, getTpsNumber))
   filters.push(eq(tables.tpsVotes.villageId, payload.villageId))
 
   const checkTpsVote = await useDB().select().from(tables.tpsVotes).where(and(...filters)).get()
@@ -58,7 +58,7 @@ export default defineEventHandler(async (event) => {
   const checkTpsExist = await useDB().select().from(tables.tps).where(
     and(
       eq(tables.tps.villageId, Number(payload.villageId)),
-      eq(tables.tps.name, payload.tpsNumber)
+      eq(tables.tps.name, getTpsNumber)
     )
   ).get()
 
@@ -70,7 +70,7 @@ export default defineEventHandler(async (event) => {
   else {
     // else, create new tps
     const createTps = await useDB().insert(tables.tps).values({
-      name: payload.tpsNumber,
+      name: getTpsNumber,
       villageId: Number(payload.villageId),
       totalDpt: payload.totalDpt ?? 0,
       createdAt: new Date(),
