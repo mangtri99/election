@@ -9,7 +9,7 @@ const filter = ref({
   district: undefined as District | undefined,
   village: undefined as Village | undefined
 })
-
+const { user } = useUserSession()
 const loading = ref(false)
 const toast = useToast()
 const isOpenDelete = ref(false)
@@ -295,7 +295,10 @@ async function onConfirmDelete() {
           </UButton>
         </div>
 
-        <div class="flex md:space-x-4 space-x-2">
+        <div
+          v-if="user?.role && user?.role.toLowerCase() === 'admin'"
+          class="flex md:space-x-4 space-x-2"
+        >
           <UButton
             size="xs"
             variant="solid"
