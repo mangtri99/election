@@ -9,25 +9,6 @@ if (route.query.login === 'true') {
   window.location.href = '/'
 }
 
-const router = useRouter()
-
-onMounted(() => {
-  const getDate = new Date()
-
-  const getFullYear = getDate.getFullYear()
-  const getMonth = getDate.getMonth() + 1
-  const getDay = getDate.getDate()
-
-  const getHours = getDate.getHours()
-  const getMinutes = getDate.getMinutes()
-  const getSeconds = getDate.getSeconds()
-
-  console.log(new Date(getFullYear, getMonth, getDay, getHours, getMinutes, getSeconds))
-
-  if (new Date(getFullYear, getMonth, getDay, getHours, getMinutes, getSeconds) < new Date(2024, 11, 27, 11, 0, 0)) {
-    router.push('/lock')
-  }
-})
 </script>
 
 <template>
